@@ -1,4 +1,4 @@
-#include <assert.h>
+﻿#include <assert.h>
 #include <stdlib.h>
 #include "camera.h"
 #include "iostream"
@@ -87,7 +87,8 @@ Matrix4x4 Camera::get_view_matrix() {
 }
 
 Matrix4x4 Camera::get_proj_matrix() {
-	Matrix4x4 m = perspective(FOVY, aspect, NEAR, FAR);
+	//Matrix4x4 m = perspective(FOVY, aspect, NEAR, FAR);
+	Matrix4x4 m = orthographic(aspect, 1, NEAR, FAR);//透视变正交投影
 	return m;
 }
 
