@@ -1,4 +1,4 @@
-#include <assert.h>
+ï»¿#include <assert.h>
 #include <math.h>
 #include <stdlib.h>
 #include "graphics.h"
@@ -232,14 +232,14 @@ static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
 	return Vector3f(-1, 1, 1); // in this case generate negative coordinates, it will be thrown away by the rasterizator
 }
 
-//É¨ÃèÏß·¨
+//æ‰«æçº¿æ³•
 //void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 //{
 //	RenderBuffer* render_buffer = draw_data->renderbuffer;
 //	Vector3f ndc_coords[3];
 //	for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
 //
-//	// ±³ÃæÌŞ³ı
+//	// èƒŒé¢å‰”é™¤
 //	if (is_back_facing(ndc_coords)) return;
 //
 //	Vector2f screen_coords[3];
@@ -264,37 +264,37 @@ static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
 //	if (t0.y > t2.y) std::swap(t0, t2);
 //	if (t1.y > t2.y) std::swap(t1, t2);
 //
-//	//Õû¸öÈı½ÇĞÎµÄyÖá³¤¶È
+//	//æ•´ä¸ªä¸‰è§’å½¢çš„yè½´é•¿åº¦
 //	int total_height = t2.y - t0.y;
 //
-//	//ÑØyÖá´Ó×îµÍµã±éÀúµ½×î¸ß¶¥µãµÄ¸ß¶È
+//	//æ²¿yè½´ä»æœ€ä½ç‚¹éå†åˆ°æœ€é«˜é¡¶ç‚¹çš„é«˜åº¦
 //	for (int i = 0; i < total_height; i++)
 //	{
-//		//ÊÇ·ñÎªµÚ¶ş²¿·Ö(ÉÏ°ë²¿·Ö)£¬¸ßÓÚ»òµÈÓÚÖĞ¼ä¶¥µãÎªÉÏ°ë²¿·Ö£¬µÍÓÚÖĞ¼ä¶¥µãÎªÏÂ°ë²¿·Ö
+//		//æ˜¯å¦ä¸ºç¬¬äºŒéƒ¨åˆ†(ä¸ŠåŠéƒ¨åˆ†)ï¼Œé«˜äºæˆ–ç­‰äºä¸­é—´é¡¶ç‚¹ä¸ºä¸ŠåŠéƒ¨åˆ†ï¼Œä½äºä¸­é—´é¡¶ç‚¹ä¸ºä¸‹åŠéƒ¨åˆ†
 //		bool second_half = i > t1.y - t0.y || t1.y == t0.y;
 //
-//		//ÉÏ°ë²¿·Ö¸ß¶ÈÎª×î¸ß¶¥µã¼õÈ¥ÖĞ¼ä¶¥µãµÄ¸ß¶È£¬ÏÂ°ë²¿·ÖÎªÖĞ¼ä¶¥µã¼õÈ¥×îµÍ¶¥µãµÄ¸ß¶È
+//		//ä¸ŠåŠéƒ¨åˆ†é«˜åº¦ä¸ºæœ€é«˜é¡¶ç‚¹å‡å»ä¸­é—´é¡¶ç‚¹çš„é«˜åº¦ï¼Œä¸‹åŠéƒ¨åˆ†ä¸ºä¸­é—´é¡¶ç‚¹å‡å»æœ€ä½é¡¶ç‚¹çš„é«˜åº¦
 //		int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
 //
 //		float alpha = (float)i / total_height;
-//		//ÏÂ°ë²¿·ÖÖ±½ÓÈ¡iÀ´¼ÆËã£¬ÉÏ°ë²¿·ÖĞèÒª°Ñi¼õÈ¥ÏÂ°ë²¿·ÖµÄ¸ß¶È
+//		//ä¸‹åŠéƒ¨åˆ†ç›´æ¥å–iæ¥è®¡ç®—ï¼Œä¸ŠåŠéƒ¨åˆ†éœ€è¦æŠŠiå‡å»ä¸‹åŠéƒ¨åˆ†çš„é«˜åº¦
 //		float beta = (float)(i - (second_half ? t1.y - t0.y : 0)) / segment_height;
 //
-//		Vector2f A = t0 + (t2 - t0) * alpha;//Çó³öµ±Ç°y×ø±ê¶ÔÓ¦µÄ×î¸ß¶¥µãÓë×îµÍ¶¥µãÁ¬ÏßÉÏµÄµã
-//		Vector2f B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;//Çó³öµ±Ç°y×ø±ê¶ÔÓ¦µÄÖĞ¼ä¶¥µãÓë×îµÍ¶¥µãÁ¬ÏßÉÏµÄµã
-//		//ÑØxÖá£¬´ÓĞ¡µ½´ó»­µã£¬ÈôAµãµÄx±ÈBµãµÄx´ó£¬Ôò½»»»Á½¸öµã
+//		Vector2f A = t0 + (t2 - t0) * alpha;//æ±‚å‡ºå½“å‰yåæ ‡å¯¹åº”çš„æœ€é«˜é¡¶ç‚¹ä¸æœ€ä½é¡¶ç‚¹è¿çº¿ä¸Šçš„ç‚¹
+//		Vector2f B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;//æ±‚å‡ºå½“å‰yåæ ‡å¯¹åº”çš„ä¸­é—´é¡¶ç‚¹ä¸æœ€ä½é¡¶ç‚¹è¿çº¿ä¸Šçš„ç‚¹
+//		//æ²¿xè½´ï¼Œä»å°åˆ°å¤§ç”»ç‚¹ï¼Œè‹¥Aç‚¹çš„xæ¯”Bç‚¹çš„xå¤§ï¼Œåˆ™äº¤æ¢ä¸¤ä¸ªç‚¹
 //		if (A.x > B.x) std::swap(A, B);
 //		for (int j = A.x; j <= B.x; j++) {
 //			Vector2i P(j, t0.y + i);
 //			if (P.x < 0 || P.y < 0 || P.x >= render_buffer->width || P.y >= render_buffer->height) continue;
 //			Vector3f barycentric_weights = barycentric(screen_coords[0], screen_coords[1], screen_coords[2], P);
-//			// Éî¶È²åÖµ
+//			// æ·±åº¦æ’å€¼
 //			float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
 //
-//			// Éî¶È²âÊÔ
+//			// æ·±åº¦æµ‹è¯•
 //			if (frag_depth > render_buffer->get_depth(P.x, P.y)) continue;
 //
-//			// ±äÁ¿²åÖµ
+//			// å˜é‡æ’å€¼
 //			shader_struct_v2f interpolate_v2f;
 //			interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
 //
@@ -302,7 +302,7 @@ static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
 //			Color color;
 //			bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
 //
-//			// »æÖÆÏñËØ
+//			// ç»˜åˆ¶åƒç´ 
 //			if (!discard) {
 //				render_buffer->set_depth(P.x, P.y, frag_depth);
 //				render_buffer->set_color(P.x, P.y, color);
@@ -312,16 +312,16 @@ static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
 //}
 
 static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f) {
-	// Æë´Î³ı·¨ / Í¸ÊÓ³ı·¨ (homogeneous division / perspective division)
+	// é½æ¬¡é™¤æ³• / é€è§†é™¤æ³• (homogeneous division / perspective division)
 	Vector3f ndc_coords[3];
 	for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
 
-	// ±³ÃæÌŞ³ı
+	// èƒŒé¢å‰”é™¤
 	if (is_back_facing(ndc_coords)) return;
 
 	RenderBuffer* render_buffer = draw_data->render_buffer;
 
-	// ÆÁÄ»Ó³Éä
+	// å±å¹•æ˜ å°„
 	Vector2f screen_coords[3];
 	float screen_depth[3];
 	for (int i = 0; i < 3; i++) {
@@ -346,28 +346,34 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f) {
 		}
 	}
 
-	Vector2i P;
-	for (P.x = bboxmin.x; P.x <= bboxmax.x; P.x++) {
-		for (P.y = bboxmin.y; P.y <= bboxmax.y; P.y++) {
+//#pragma omp parallel for
+	for (int x = bboxmin.x; x <= int(bboxmax.x); x++) {
+		for (int y = bboxmin.y; y <= int(bboxmax.y); y++) {
+			Vector2i P;
+			P.x = x; P.y = y;
 			Vector3f barycentric_weights = barycentric(screen_coords[0], screen_coords[1], screen_coords[2], P);
 			if (barycentric_weights.x < 0 || barycentric_weights.y < 0 || barycentric_weights.z < 0) continue;
 
-			// Éî¶È²åÖµ
+			// æ·±åº¦æ’å€¼
 			float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
 
-			// Éî¶È²âÊÔ
+			// æ·±åº¦æµ‹è¯•
 			if (frag_depth > render_buffer->get_depth(P.x, P.y)) continue;
 
-			// ±äÁ¿²åÖµ
+			// å˜é‡æ’å€¼
 			shader_struct_v2f interpolate_v2f;
 			interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
 
 			// fragment shader
-			Color color;
-			bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
+			Color color = Color::White;
+			color.r *= frag_depth;
+			color.g *= frag_depth;
+			color.b *= frag_depth;
+			//bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
 
-			// »æÖÆÏñËØ
-			if (!discard) {
+			// ç»˜åˆ¶åƒç´ 
+			//if (!discard) 
+			{
 				render_buffer->set_depth(P.x, P.y, frag_depth);
 				render_buffer->set_color(P.x, P.y, color);
 			}
@@ -376,13 +382,16 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f) {
 }
 
 void graphics_draw_triangle(DrawData* draw_data) {
-	shader_struct_v2f v2fs[3];
-	for (int i = 0; i < draw_data->model->nfaces(); i++) {
-		for (int j = 0; j < 3; j++) {
+	
+	for (int i = 0; i < draw_data->model->nfaces(); i++)
+	{
+		shader_struct_v2f v2fs[3];
+		for (int j = 0; j < 3; j++) 
+		{
 			shader_struct_a2v a2v;
 			a2v.obj_pos = draw_data->model->vert(i, j);
-			a2v.obj_normal = draw_data->model->normal(i, j);
-			a2v.uv = draw_data->model->uv(i, j);
+			//a2v.obj_normal = draw_data->model->normal(i, j);
+			//a2v.uv = draw_data->model->uv(i, j);
 			v2fs[j] = draw_data->shader->vertex(&a2v);
 		}
 

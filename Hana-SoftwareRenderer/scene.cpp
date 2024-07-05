@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 
 Scene::Scene(RenderBuffer* render_Buffer) {
 	this->frameBuffer = render_Buffer;
@@ -83,18 +83,18 @@ SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_B
 	material->gloss = 50;
 	material->bump_scale = 1;
 
-	shaderInfos[0].des = "6.NormalMap";
-	shaderInfos[0].shader = new NormalMapShader();
+	shaderInfos[5].des = "6.NormalMap";
+	shaderInfos[5].shader = new NormalMapShader();
 	shaderInfos[1].des = "5.Blinn";
 	shaderInfos[1].shader = new BlinnShader();
 	shaderInfos[2].des = "4.Texture_Light(no shadow)";
 	shaderInfos[2].shader = new TextureWithLightShader();
-	shaderInfos[3].des = "5.Texture(no shadow)";
+	shaderInfos[3].des = "3.Texture(no shadow)";
 	shaderInfos[3].shader = new TextureShader();
 	shaderInfos[4].des = "2.Toon(no shadow)";
 	shaderInfos[4].shader = new ToonShader();
-	shaderInfos[5].des = "1.Ground(no shadow)";
-	shaderInfos[5].shader = new GroundShader();
+	shaderInfos[0].des = "1.Ground(no shadow)";
+	shaderInfos[0].shader = new GroundShader();
 
 
 	cur_shader_index = 0;
@@ -127,7 +127,7 @@ void SingleModelScene::tick(float delta_time) {
 void SingleModelScene::on_key_input(keycode_t key, int pressed) {
 	Scene::on_key_input(key, pressed);
 
-	if (pressed)
+	/*if (pressed)
 	{
 		switch (key)
 		{
@@ -143,5 +143,5 @@ void SingleModelScene::on_key_input(keycode_t key, int pressed) {
 		default:
 			break;
 		}
-	}
+	}*/
 }

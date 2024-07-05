@@ -1,4 +1,4 @@
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <sstream>
 #include "model.h"
@@ -18,7 +18,7 @@ Model::Model(const char* filename) : verts_(), faces_(), norms_(), uv_(), diffus
 			for (int i = 0; i < 3; i++) iss >> v[i];
 			verts_.push_back(v);
 		}
-		else if (!line.compare(0, 3, "vn ")) {
+		/*else if (!line.compare(0, 3, "vn ")) {
 			iss >> trash >> trash;
 			Vector3f n;
 			for (int i = 0; i < 3; i++) iss >> n[i];
@@ -29,22 +29,36 @@ Model::Model(const char* filename) : verts_(), faces_(), norms_(), uv_(), diffus
 			Vector2f uv;
 			for (int i = 0; i < 2; i++) iss >> uv[i];
 			uv_.push_back(uv);
-		}
+		}*/
 		else if (!line.compare(0, 2, "f ")) {
-			std::vector<Vector3i> f;
-			Vector3i tmp;
+			Vector3i pointIdx;
 			iss >> trash;
-			while (iss >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
-				for (int i = 0; i < 3; i++) tmp[i]--; // in wavefront obj all indices start at 1, not zero
-				f.push_back(tmp);
+
+			iss >> pointIdx[0] >> pointIdx[1] >> pointIdx[2];
+			_triangleIdx.emplace_back(pointIdx);
+
+			std::vector<Vector3i> f(3);
+
+			for (int i=0;i<3;i++)
+			{
+				pointIdx[i]--;
+				f[i][0] = pointIdx[i];
 			}
 			faces_.push_back(f);
+			//std::vector<Vector3i> f;
+			//Vector3i tmp;
+			//iss >> trash;
+			//while (iss >> tmp[0] >> trash >> tmp[1] >> trash >> tmp[2]) {
+			//	for (int i = 0; i < 3; i++) tmp[i]--; // in wavefront obj all indices start at 1, not zero
+			//	f.push_back(tmp);
+			//}
+			//faces_.push_back(f);
 		}
 	}
 	//std::cerr << "# v# " << verts_.size() << " f# " << faces_.size() << " vt# " << uv_.size() << " vn# " << norms_.size() << std::endl;
-	load_texture(filename, "_diffuse.tga", diffusemap_);
+	/*load_texture(filename, "_diffuse.tga", diffusemap_);
 	load_texture(filename, "_nm_tangent.tga", normalmap_);
-	load_texture(filename, "_spec.tga", specularmap_);
+	load_texture(filename, "_spec.tga", specularmap_);*/
 }
 
 Model::~Model() {}

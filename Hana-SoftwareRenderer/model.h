@@ -1,4 +1,4 @@
-#ifndef __MODEL_H__
+﻿#ifndef __MODEL_H__
 #define __MODEL_H__
 #include <vector>
 #include <string>
@@ -6,9 +6,10 @@
 #include "mathapi.h"
 
 class Model {
-private:
+public:
     std::vector<Vector3f> verts_;
     std::vector<std::vector<Vector3i> > faces_; // attention, this Vec3i means vertex/uv/normal
+    std::vector<Vector3i> _triangleIdx;
     std::vector<Vector3f> norms_;
     std::vector<Vector2f> uv_;
     TGAImage diffusemap_;

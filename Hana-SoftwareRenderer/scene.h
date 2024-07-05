@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "mathapi.h"
 #include "gameobject.h"
@@ -70,7 +70,7 @@ public:
 		shader_data->camera_vp_matrix = projection_matrix * view_matrix;
 		shader_data->enable_shadow = enable_shadow;
 
-		if (enable_shadow)
+		/*if (enable_shadow)
 		{
 			if (!shadow_draw_data)
 			{
@@ -85,17 +85,17 @@ public:
 
 			graphics_draw_triangle(shadow_draw_data);
 			shader_data->shadow_map = shdaow_map;
-		}
+		}*/
 
 		draw_data->render_buffer = frameBuffer;
 		graphics_draw_triangle(draw_data);
 
 
-		if (enable_shadow)
+		/*if (enable_shadow)
 		{
 			shdaow_map->renderbuffer_clear_color(Color::Black);
 			shdaow_map->renderbuffer_clear_depth(std::numeric_limits<float>::max());
-		}
+		}*/
 	}
 };
 

@@ -1,29 +1,29 @@
-#include "IShader.h"
+ï»¿#include "IShader.h"
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý GroundShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ GroundShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f GroundShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
-	v2f.intensity = saturate(ObjectToWorldNormal(a2v->obj_normal) * WorldLightDir());
+	//v2f.intensity = saturate(ObjectToWorldNormal(a2v->obj_normal) * WorldLightDir());
 	return v2f;
 }
 
 bool GroundShader::fragment(shader_struct_v2f* v2f, Color& color) {
-	color = Color::White * v2f->intensity;
+	//color = Color::White * v2f->intensity;//åŽŸæ¥çš„
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü GroundShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ GroundShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý ToonShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ ToonShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f ToonShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
-	v2f.intensity = saturate(ObjectToWorldNormal(a2v->obj_normal) * WorldLightDir());
+	//v2f.intensity = saturate(ObjectToWorldNormal(a2v->obj_normal) * WorldLightDir());
 	return v2f;
 }
 
@@ -38,93 +38,93 @@ bool ToonShader::fragment(shader_struct_v2f* v2f, Color& color) {
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü ToonShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ ToonShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý TextureShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ TextureShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f TextureShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
-	v2f.uv = a2v->uv;
+	//v2f.uv = a2v->uv;
 	return v2f;
 }
 
 bool TextureShader::fragment(shader_struct_v2f* v2f, Color& color) {
-	color = tex_diffuse(v2f->uv);
+	//color = tex_diffuse(v2f->uv);
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü TextureShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ TextureShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý TextureWithLightShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ TextureWithLightShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f TextureWithLightShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
-	v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
-	v2f.uv = a2v->uv;
+	//v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
+	//v2f.uv = a2v->uv;
 	return v2f;
 }
 
 bool TextureWithLightShader::fragment(shader_struct_v2f* v2f, Color& color) {
-	float intensity = saturate(v2f->world_normal * WorldLightDir());
-	color = tex_diffuse(v2f->uv) * intensity;
+	//float intensity = saturate(v2f->world_normal * WorldLightDir());
+	//color = tex_diffuse(v2f->uv) * intensity;
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü TextureWithLightShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ TextureWithLightShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý BlinnShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ BlinnShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f BlinnShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
 	v2f.world_pos = ObjectToWorldPos(a2v->obj_pos);
-	v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
-	v2f.uv = a2v->uv;
+	//v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
+	//v2f.uv = a2v->uv;
 	return v2f;
 }
 
 bool BlinnShader::fragment(shader_struct_v2f* v2f, Color& color) {
-	Vector3f worldNormalDir = (v2f->world_normal).normalize();
-	Color albedo = tex_diffuse(v2f->uv) * shader_data->matrial->color;
-	Color ambient = shader_data->ambient * albedo;
-	float n_dot_l = saturate(worldNormalDir * WorldLightDir());
-	Color diffuse = shader_data->light_color * albedo * n_dot_l;
+	//Vector3f worldNormalDir = (v2f->world_normal).normalize();
+	//Color albedo = tex_diffuse(v2f->uv) * shader_data->matrial->color;
+	//Color ambient = shader_data->ambient * albedo;
+	//float n_dot_l = saturate(worldNormalDir * WorldLightDir());
+	//Color diffuse = shader_data->light_color * albedo * n_dot_l;
 	Vector3f viewDir = WorldSpaceViewDir(v2f->world_pos).normalize();
 	Vector3f halfDir = (viewDir + WorldLightDir()).normalize();
-	Color spcular = shader_data->light_color * shader_data->matrial->specular * std::pow(saturate(worldNormalDir * halfDir), shader_data->matrial->gloss);
+	//Color spcular = shader_data->light_color * shader_data->matrial->specular * std::pow(saturate(worldNormalDir * halfDir), shader_data->matrial->gloss);
 
 	Vector4f depth_pos = shader_data->light_vp_matrix * embed<4>(v2f->world_pos);
-	int shadow = is_in_shadow(depth_pos, n_dot_l);
+	//int shadow = is_in_shadow(depth_pos, n_dot_l);
 
-	color = ambient + (diffuse + spcular) * shadow;
+	//color = ambient + (diffuse + spcular) * shadow;
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü BlinnShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ BlinnShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý NormalMapShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ NormalMapShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f NormalMapShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
-	v2f.uv = a2v->uv;
+	//v2f.uv = a2v->uv;
 	v2f.world_pos = ObjectToWorldPos(a2v->obj_pos);
-	v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
+	//v2f.world_normal = ObjectToWorldNormal(a2v->obj_normal);
 	return v2f;
 }
 
 bool NormalMapShader::fragment(shader_struct_v2f* v2f, Color& color) {
-	Vector3f normal = v2f->world_normal;
+	/*Vector3f normal = v2f->world_normal;
 
 	float x = normal.x;
 	float y = normal.y;
@@ -157,15 +157,15 @@ bool NormalMapShader::fragment(shader_struct_v2f* v2f, Color& color) {
 	Vector4f depth_pos = shader_data->light_vp_matrix * embed<4>(v2f->world_pos);
 	int shadow = is_in_shadow(depth_pos, n_dot_l);
 
-	color = ambient + (diffuse + spcular) * shadow;
+	color = ambient + (diffuse + spcular) * shadow;*/
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü NormalMapShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ NormalMapShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
 
 
 
-//¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý ShadowShader ¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý¡ý
+//â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“ ShadowShader â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“â†“
 
 shader_struct_v2f ShadowShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
@@ -179,4 +179,4 @@ bool ShadowShader::fragment(shader_struct_v2f* v2f, Color& color) {
 	return false;
 }
 
-//¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü ShadowShader ¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü¡ü
+//â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘ ShadowShader â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘â†‘
