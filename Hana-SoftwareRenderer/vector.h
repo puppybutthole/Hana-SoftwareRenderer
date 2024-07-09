@@ -77,6 +77,11 @@ template<size_t SIZE, typename T, typename U> Vector<SIZE, T>operator *(Vector<S
 	return lhs;
 }
 
+template<size_t SIZE, typename T, typename U> void operator *=(Vector<SIZE, T>& lhs, const U& f) {
+	for (size_t i = SIZE; i--; lhs[i] *= f);
+	return;
+}
+
 template<size_t SIZE, typename T, typename U> Vector<SIZE, T>operator /(Vector<SIZE, T> lhs, const U& f) {
 	for (size_t i = SIZE; i--; lhs[i] /= f);
 	return lhs;

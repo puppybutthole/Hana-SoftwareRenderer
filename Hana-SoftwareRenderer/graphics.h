@@ -6,10 +6,11 @@
 #include "model.h"
 #include "IShader.h"
 
-struct DrawData {
-	Model* model;
-	IShader* shader;
-	RenderBuffer* render_buffer;
+struct DrawData
+{
+    Model* model;
+    IShader* shader;
+    RenderBuffer* render_buffer;
 };
 
 void graphics_draw_triangle(DrawData* app_data);

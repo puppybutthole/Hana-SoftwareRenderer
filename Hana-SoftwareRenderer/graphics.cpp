@@ -5,20 +5,28 @@
 #include <stdlib.h>
 #include "graphics.h"
 
+#include <set>
+#if _DEBUG
+std::set<int> gSet;
+int gNum = 0;
+#endif
 
-static void liner_interpolate_varyings(shader_struct_v2f* from, shader_struct_v2f* to, shader_struct_v2f* ret, int sizeof_varyings, float t) {
+static void liner_interpolate_varyings(shader_struct_v2f* from, shader_struct_v2f* to, shader_struct_v2f* ret, int sizeof_varyings, float t)
+{
     int num_floats = sizeof_varyings / sizeof(float);
     float* dst = (float*)ret;
 
     float* from_param = (float*)(from);
     float* to_param = (float*)(to);
 
-    for (int i = 0; i < num_floats; i++) {
+    for (int i = 0; i < num_floats; i++)
+    {
         dst[i] = from_param[i] + (to_param[i] - from_param[i]) * t;
     }
 }
 
-typedef enum {
+typedef enum
+{
     POSITIVE_W,
     POSITIVE_X,
     NEGATIVE_X,
@@ -28,8 +36,10 @@ typedef enum {
     NEGATIVE_Z
 } plane_t;
 
-static int is_inside_plane(Vector4f coord, plane_t plane) {
-    switch (plane) {
+static int is_inside_plane(Vector4f coord, plane_t plane)
+{
+    switch (plane)
+    {
     case POSITIVE_W:
         return coord.w >= EPSILON;
     case POSITIVE_X:
@@ -50,8 +60,10 @@ static int is_inside_plane(Vector4f coord, plane_t plane) {
     }
 }
 
-static float get_intersect_ratio(Vector4f prev, Vector4f curr, plane_t plane) {
-    switch (plane) {
+static float get_intersect_ratio(Vector4f prev, Vector4f curr, plane_t plane)
+{
+    switch (plane)
+    {
     case POSITIVE_W:
         return (prev.w - EPSILON) / (prev.w - curr.w);
     case POSITIVE_X:
@@ -75,12 +87,14 @@ static float get_intersect_ratio(Vector4f prev, Vector4f curr, plane_t plane) {
 static int clip_against_plane(
     plane_t plane, int in_num_vertices, int varying_num_floats,
     shader_struct_v2f* in_v2fs,
-    shader_struct_v2f* out_v2fs) {
+    shader_struct_v2f* out_v2fs)
+{
     int out_num_vertices = 0;
     int i, j;
 
     assert(in_num_vertices >= 3);
-    for (i = 0; i < in_num_vertices; i++) {
+    for (i = 0; i < in_num_vertices; i++)
+    {
         int prev_index = (i - 1 + in_num_vertices) % in_num_vertices;
         int curr_index = i;
 
@@ -93,7 +107,8 @@ static int clip_against_plane(
         int prev_inside = is_inside_plane(prev_coord, plane);
         int curr_inside = is_inside_plane(curr_coord, plane);
 
-        if (prev_inside != curr_inside) {
+        if (prev_inside != curr_inside)
+        {
             shader_struct_v2f& out_v2f = out_v2fs[out_num_vertices];
 
             float ratio = get_intersect_ratio(prev_coord, curr_coord, plane);
@@ -132,7 +147,8 @@ static int clip_against_plane(
         }                                                                   \
     } while (0)
 
-static int is_vertex_visible(Vector4f v) {
+static int is_vertex_visible(Vector4f v)
+{
     return fabs(v.x) <= v.w && fabs(v.y) <= v.w && fabs(v.z) <= v.w;
 }
 
@@ -175,7 +191,8 @@ static int clip_triangle(
  *     vec3_t ac = vec3_sub(c, a);
  *     return vec3_cross(ab, ac).z <= 0;
  */
-static bool is_back_facing(Vector3f* ndc_coords) {
+static bool is_back_facing(Vector3f* ndc_coords)
+{
     Vector3f a = ndc_coords[0];
     Vector3f b = ndc_coords[1];
     Vector3f c = ndc_coords[2];
@@ -189,7 +206,8 @@ static bool is_back_facing(Vector3f* ndc_coords) {
  * for depth interpolation, see subsection 3.5.1 of
  * https://www.khronos.org/registry/OpenGL/specs/es/2.0/es_full_spec_2.0.pdf
  */
-static float interpolate_depth(float* screen_depths, Vector3f weights) {
+static float interpolate_depth(float* screen_depths, Vector3f weights)
+{
     Vector3f screen_depth;
     for (size_t i = 0; i < 3; i++)
     {
@@ -208,7 +226,8 @@ static float interpolate_depth(float* screen_depths, Vector3f weights) {
  * equation 3.5 in reference 2 (page 58) which uses barycentric coordinates
  */
 
-static void interpolate_varyings(shader_struct_v2f* v2f, shader_struct_v2f* ret, int sizeof_varyings, Vector3f weights, float recip_w[3]) {
+static void interpolate_varyings(shader_struct_v2f* v2f, shader_struct_v2f* ret, int sizeof_varyings, Vector3f weights, float recip_w[3])
+{
     int num_floats = sizeof_varyings / sizeof(float);
     float* src0 = (float*)(&v2f[0]);
     float* src1 = (float*)(&v2f[1]);
@@ -219,7 +238,8 @@ static void interpolate_varyings(shader_struct_v2f* v2f, shader_struct_v2f* ret,
     float weight2 = recip_w[2] * weights.z;
     float normalizer = 1 / (weight0 + weight1 + weight2);
     int i;
-    for (i = 0; i < num_floats; i++) {
+    for (i = 0; i < num_floats; ++i)
+    {
         float sum = src0[i] * weight0 + src1[i] * weight1 + src2[i] * weight2;
         dst[i] = sum * normalizer;
     }
@@ -227,7 +247,8 @@ static void interpolate_varyings(shader_struct_v2f* v2f, shader_struct_v2f* ret,
 
 static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
     Vector3f s[2];
-    for (int i = 2; i--; ) {
+    for (int i = 2; i--; )
+    {
         s[i][0] = C[i] - A[i];
         s[i][1] = B[i] - A[i];
         s[i][2] = A[i] - P[i];
@@ -241,80 +262,83 @@ static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
 //扫描线法
 //void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 //{
-//	RenderBuffer* render_buffer = draw_data->renderbuffer;
-//	Vector3f ndc_coords[3];
-//	for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
+//    Vector3f ndc_coords[3];
+//    for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
 //
-//	// 背面剔除
-//	if (is_back_facing(ndc_coords)) return;
+//    // 背面剔除
+//    if (is_back_facing(ndc_coords)) return;
 //
-//	Vector2f screen_coords[3];
-//	float screen_depth[3];
-//	for (int i = 0; i < 3; i++) {
-//		Vector3f win_coord = viewport_transform(render_buffer->width, render_buffer->height, ndc_coords[i]);
-//		screen_coords[i] = Vector2f(win_coord.x, win_coord.y);
-//		screen_depth[i] = win_coord.z;
-//	}
 //
-//	float recip_w[3];
-//	/* reciprocals of w */
-//	for (int i = 0; i < 3; i++) {
-//		recip_w[i] = 1 / v2f[i].clip_pos[3];
-//	}
+//    RenderBuffer* render_buffer = draw_data->render_buffer;
 //
-//	Vector2f t0 = screen_coords[0];
-//	Vector2f t1 = screen_coords[1];
-//	Vector2f t2 = screen_coords[2];
+//    Vector2f screen_coords[3];
+//    float screen_depth[3];
+//    for (int i = 0; i < 3; i++) {
+//        Vector3f win_coord = viewport_transform(render_buffer->width, render_buffer->height, ndc_coords[i]);
+//        screen_coords[i] = Vector2f(win_coord.x, win_coord.y);
+//        screen_depth[i] = win_coord.z;
+//    }
 //
-//	if (t0.y > t1.y) std::swap(t0, t1);
-//	if (t0.y > t2.y) std::swap(t0, t2);
-//	if (t1.y > t2.y) std::swap(t1, t2);
+//    float recip_w[3];
+//    /* reciprocals of w */
+//    for (int i = 0; i < 3; i++) {
+//        recip_w[i] = 1 / v2f[i].clip_pos[3];
+//    }
 //
-//	//整个三角形的y轴长度
-//	int total_height = t2.y - t0.y;
+//    Vector2f t0 = screen_coords[0];
+//    Vector2f t1 = screen_coords[1];
+//    Vector2f t2 = screen_coords[2];
 //
-//	//沿y轴从最低点遍历到最高顶点的高度
-//	for (int i = 0; i < total_height; i++)
-//	{
-//		//是否为第二部分(上半部分)，高于或等于中间顶点为上半部分，低于中间顶点为下半部分
-//		bool second_half = i > t1.y - t0.y || t1.y == t0.y;
+//    if (t0.y > t1.y) std::swap(t0, t1);
+//    if (t0.y > t2.y) std::swap(t0, t2);
+//    if (t1.y > t2.y) std::swap(t1, t2);
 //
-//		//上半部分高度为最高顶点减去中间顶点的高度，下半部分为中间顶点减去最低顶点的高度
-//		int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
+//    //整个三角形的y轴长度
+//    int total_height = t2.y - t0.y;
 //
-//		float alpha = (float)i / total_height;
-//		//下半部分直接取i来计算，上半部分需要把i减去下半部分的高度
-//		float beta = (float)(i - (second_half ? t1.y - t0.y : 0)) / segment_height;
+//    //沿y轴从最低点遍历到最高顶点的高度
+//    for (int i = 0; i < total_height; i++)
+//    {
+//        //是否为第二部分(上半部分)，高于或等于中间顶点为上半部分，低于中间顶点为下半部分
+//        bool second_half = i > t1.y - t0.y || t1.y == t0.y;
 //
-//		Vector2f A = t0 + (t2 - t0) * alpha;//求出当前y坐标对应的最高顶点与最低顶点连线上的点
-//		Vector2f B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;//求出当前y坐标对应的中间顶点与最低顶点连线上的点
-//		//沿x轴，从小到大画点，若A点的x比B点的x大，则交换两个点
-//		if (A.x > B.x) std::swap(A, B);
-//		for (int j = A.x; j <= B.x; j++) {
-//			Vector2i P(j, t0.y + i);
-//			if (P.x < 0 || P.y < 0 || P.x >= render_buffer->width || P.y >= render_buffer->height) continue;
-//			Vector3f barycentric_weights = barycentric(screen_coords[0], screen_coords[1], screen_coords[2], P);
-//			// 深度插值
-//			float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
+//        //上半部分高度为最高顶点减去中间顶点的高度，下半部分为中间顶点减去最低顶点的高度
+//        int segment_height = second_half ? t2.y - t1.y : t1.y - t0.y;
 //
-//			// 深度测试
-//			if (frag_depth > render_buffer->get_depth(P.x, P.y)) continue;
+//        float alpha = (float)i / total_height;
+//        //下半部分直接取i来计算，上半部分需要把i减去下半部分的高度
+//        float beta = (float)(i - (second_half ? t1.y - t0.y : 0)) / segment_height;
 //
-//			// 变量插值
-//			shader_struct_v2f interpolate_v2f;
-//			interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
+//        Vector2f A = t0 + (t2 - t0) * alpha;//求出当前y坐标对应的最高顶点与最低顶点连线上的点
+//        Vector2f B = second_half ? t1 + (t2 - t1) * beta : t0 + (t1 - t0) * beta;//求出当前y坐标对应的中间顶点与最低顶点连线上的点
+//        //沿x轴，从小到大画点，若A点的x比B点的x大，则交换两个点
+//        if (A.x > B.x) std::swap(A, B);
+//        for (int j = A.x; j <= B.x; j++) {
+//            Vector2i P(j, t0.y + i);
+//            if (P.x < 0 || P.y < 0 || P.x >= render_buffer->width || P.y >= render_buffer->height) continue;
+//            Vector3f barycentric_weights = barycentric(screen_coords[0], screen_coords[1], screen_coords[2], P);
+//            // 深度插值
+//            float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
 //
-//			// fragment shader
-//			Color color;
-//			bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
+//            // 深度测试
+//            if (frag_depth > render_buffer->get_depth(P.x, P.y)) continue;
 //
-//			// 绘制像素
-//			if (!discard) {
-//				render_buffer->set_depth(P.x, P.y, frag_depth);
-//				render_buffer->set_color(P.x, P.y, color);
-//			}
-//		}
-//	}
+//            // 变量插值
+//            shader_struct_v2f interpolate_v2f;
+//            interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
+//
+//            // fragment shader
+//            Color color = Color::White * (50.f / interpolate_v2f.clip_pos[2]);
+//            //bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
+//
+//            // 绘制像素
+//            //if (!discard)
+//            {
+//                render_buffer->set_depth(P.x, P.y, frag_depth);
+//                render_buffer->set_color(P.x, P.y, color);
+//            }
+//        }
+//    }
 //}
 
 static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
@@ -322,7 +346,7 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
     // 齐次除法 / 透视除法 (homogeneous division / perspective division)
     Vector3f ndc_coords[3];
     for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
-
+    
     // 背面剔除
     if (is_back_facing(ndc_coords)) return;
 
@@ -373,6 +397,11 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             // 深度测试
             float depth = render_buffer->get_depth(P.x, P.y);
             if (frag_depth > depth) continue;
+#if _DEBUG
+
+            gSet.insert(gNum);
+
+#endif // _DEBUG
 
             // 变量插值
             shader_struct_v2f interpolate_v2f;
@@ -400,6 +429,12 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 void graphics_draw_triangle(DrawData* draw_data)
 {
     int nfaces = draw_data->model->nfaces();
+
+#if _DEBUG
+    gNum = 0;
+    gSet.clear();
+#endif
+
     for (int i = 0; i < nfaces; ++i)
     {
         shader_struct_v2f v2fs[3] = {};
@@ -429,5 +464,24 @@ void graphics_draw_triangle(DrawData* draw_data)
 
             rasterize_triangle(draw_data, ret_v2fs);
         }
+#if _DEBUG
+        ++gNum;
+#endif
     }
+
+#if _DEBUG
+    const auto& faceIDMap = draw_data->model->idMap_;
+    std::set<int> faceIDs;
+    for (const auto& it : faceIDMap)
+    {
+        for (const auto& it2 : it.second)
+        {
+            if (gSet.find(it2) != gSet.end())
+            {
+                faceIDs.insert(it.first);
+            }
+        }
+    }
+#endif
+    return;
 }

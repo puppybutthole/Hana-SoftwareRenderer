@@ -5,11 +5,12 @@
 
 #include "MAPPModelInfo/ModelInfo.h"
 #include "MAPPUtilsFun/ModelInfoJsonSerializer.h"
+#include "MAPPUtilsFun/MAPPUtilsFun.h"
 
 #include <Windows.h>
 static const char* const WINDOW_TITLE = "MAPP-SoftwareRenderer";
 static const int WINDOW_WIDTH = 1000;
-static const int WINDOW_HEIGHT = 600;
+static const int WINDOW_HEIGHT = 1000;
 static const int WINDOW_TEXT_WIDTH = 250;
 static const int WINDOW_TEXT_HEIGHT = 220;
 
@@ -55,7 +56,7 @@ static SceneInfo load_scene(int scene_index)
     return ret;
 }
 
-static SceneInfo load_scene(const MAPPData::Mesh& mesh)
+static SceneInfo load_scene(const MAPPData::ModelInfo& modelInfo)
 {
     if (scene_info.scene)
     {
@@ -65,7 +66,7 @@ static SceneInfo load_scene(const MAPPData::Mesh& mesh)
     SceneInfo ret{};
 
     ret.name = "MAPPModelInfo";
-    ret.scene = new SingleModelScene(mesh, frame_buffer);
+    ret.scene = new SingleModelScene(modelInfo, frame_buffer);
     return ret;
 }
 
@@ -87,7 +88,7 @@ int main()
     ModelInfoJsonSerializer::ModelInfoBinDeserializer(userNamestr + "\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.bin", modelInfo);
 
     const auto& mesh = modelInfo.m_mesh;
-
+    MAPPUtilsFun::CreateOBJFile(mesh, "C:\\Users\\ThinkPad\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.obj");
 
     platform_initialize();
     window_t* window;
@@ -108,7 +109,7 @@ int main()
 
     int scene_index = 0;
 
-    scene_info = load_scene(mesh);
+    scene_info = load_scene(modelInfo);
     callbacks.button_callback = button_callback;
     callbacks.scroll_callback = scroll_callback;
     callbacks.key_callback = key_callback;
@@ -128,7 +129,7 @@ int main()
 
         if (input_key_pressed(window, KEY_Q))
         {
-            scene_info = load_scene(mesh);
+            scene_info = load_scene(modelInfo);
         }
         
         // 更新场景

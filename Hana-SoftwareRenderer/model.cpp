@@ -3,6 +3,7 @@
 #include <sstream>
 #include "model.h"
 #include "MAPPModelInfo/Mesh.h"
+#include "MAPPModelInfo/ModelInfo.h"
 Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ diffusemap_(), normalmap_(), specularmap_()
 {
     std::ifstream in;
@@ -67,7 +68,7 @@ Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ di
                 iss >> trash;
 
                 iss >> pointIdx[0] >> pointIdx[1] >> pointIdx[2];
-                _triangleIdx.emplace_back(pointIdx);
+                //_triangleIdx.emplace_back(pointIdx);
 
                 std::vector<Vector3i> f(3);
 
@@ -89,13 +90,22 @@ Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ di
 
 Model::Model(const MAPPData::Mesh& mesh)
 {
-    
     for (const auto& ver:mesh.m_points)
     {
         Vector3f v;
         v[0] = ver[0];
         v[1] = ver[1];
         v[2] = ver[2];
+
+        xMax = std::max(xMax, v[0]);
+        xMin = std::min(xMin, v[0]);
+
+        yMax = std::max(yMax, v[1]);
+        yMin = std::min(yMin, v[1]);
+
+        zMax = std::max(zMax, v[2]);
+        zMin = std::min(zMin, v[2]);
+
         verts_.push_back(v);
     }
     for (const auto& triangle : mesh.m_triangles)
@@ -107,7 +117,40 @@ Model::Model(const MAPPData::Mesh& mesh)
         f[1][0] = index[2];
         faces_.push_back(f);
     }
+}
 
+Model::Model(const MAPPData::ModelInfo& modelInfo)
+{
+    const auto& mesh = modelInfo.m_mesh;
+    for (const auto& ver : mesh.m_points)
+    {
+        Vector3f v;
+        v[0] = ver[0];
+        v[1] = ver[1];
+        v[2] = ver[2];
+
+        xMax = std::max(xMax, v[0]);
+        xMin = std::min(xMin, v[0]);
+
+        yMax = std::max(yMax, v[1]);
+        yMin = std::min(yMin, v[1]);
+
+        zMax = std::max(zMax, v[2]);
+        zMin = std::min(zMin, v[2]);
+
+        verts_.push_back(v);
+    }
+    for (const auto& triangle : mesh.m_triangles)
+    {
+        const auto& index = triangle._pointIndex;
+        std::vector<Vector3i> f(3);
+        f[0][0] = index[0];
+        f[2][0] = index[1];
+        f[1][0] = index[2];
+        faces_.push_back(f);
+    }
+    const auto& faceData = modelInfo.GetFaceDataManager();
+    idMap_ = faceData.m_faceIDToTriangleIndex;
 }
 
 Model::~Model() {}

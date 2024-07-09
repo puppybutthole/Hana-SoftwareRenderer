@@ -2,11 +2,13 @@
 #define __MODEL_H__
 #include <vector>
 #include <string>
+#include <unordered_map>
 #include "tgaimage.h"
 #include "mathapi.h"
 
 namespace MAPPData
 {
+    class ModelInfo;
     class Mesh;
 }
 
@@ -15,9 +17,10 @@ class Model
 public:
     std::vector<Vector3f> verts_;
     std::vector<std::vector<Vector3i> > faces_; // attention, this Vec3i means vertex/uv/normal
-    std::vector<Vector3i> _triangleIdx;//自定义数据，用于替换原来带法向与纹理坐标的faces_
-    std::vector<Vector3f> norms_;//待删除
-    std::vector<Vector2f> uv_;//待删除
+    std::unordered_map<int, std::vector<int>> idMap_;
+    //std::vector<Vector3i> _triangleIdx;//自定义数据，用于替换原来带法向与纹理坐标的faces_
+    //std::vector<Vector3f> norms_;//待删除
+    //std::vector<Vector2f> uv_;//待删除
 
     float xMin = 1.0e30f;
     float xMax = -1.0e30f;
@@ -33,6 +36,8 @@ public:
 public:
     Model(const char *filename);
     Model(const MAPPData::Mesh& mesh);
+    Model(const MAPPData::ModelInfo& modelInfo);
+
     ~Model();
     int nverts();
     int nfaces();

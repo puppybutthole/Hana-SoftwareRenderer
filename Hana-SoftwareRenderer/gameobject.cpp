@@ -1,5 +1,6 @@
 #include "gameobject.h"
 #include "MAPPModelInfo/Mesh.h"
+#include "MAPPModelInfo/ModelInfo.h"
 
 GameObject::GameObject(Vector3f position, Vector3f rotation, Vector3f scale)
 {
@@ -30,9 +31,9 @@ GameObject_StaticModel::GameObject_StaticModel(const char* filename, Vector3f po
 	this->model = new Model(filename);
 }
 
-GameObject_StaticModel::GameObject_StaticModel(const MAPPData::Mesh& mesh, Vector3f position, Vector3f rotation, Vector3f scale)
+GameObject_StaticModel::GameObject_StaticModel(const MAPPData::ModelInfo& modelInfo, Vector3f position, Vector3f rotation, Vector3f scale)
 {
-	this->model = new Model(mesh);
+	this->model = new Model(modelInfo);
 }
 
 GameObject_StaticModel::~GameObject_StaticModel()

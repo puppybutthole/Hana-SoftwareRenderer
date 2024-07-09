@@ -1,5 +1,6 @@
 #include "scene.h"
 #include "MAPPModelInfo/Mesh.h"
+#include "MAPPModelInfo/ModelInfo.h"
 
 Scene::Scene(RenderBuffer* render_Buffer) {
     this->frameBuffer = render_Buffer;
@@ -104,9 +105,9 @@ SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_B
 }
 
 
-SingleModelScene::SingleModelScene(const MAPPData::Mesh& mesh, RenderBuffer* render_Buffer) :Scene(render_Buffer)
+SingleModelScene::SingleModelScene(const MAPPData::ModelInfo& modelInfo, RenderBuffer* render_Buffer) :Scene(render_Buffer)
 {
-    gameobject = new GameObject_StaticModel(mesh);
+    gameobject = new GameObject_StaticModel(modelInfo);
 
     material = new Material();
     material->diffuse_map = gameobject->model->get_diffuse_map();
