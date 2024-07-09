@@ -18,7 +18,19 @@ Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ di
         {
             iss >> trash;
             Vector3f v;
-            for (int i = 0; i < 3; i++) iss >> v[i];
+            //for (int i = 0; i < 3; i++) iss >> v[i];
+            iss >> v[0];
+            xMax = std::max(xMax, v[0]);
+            xMin = std::min(xMin, v[0]);
+
+            iss >> v[1];
+            yMax = std::max(yMax, v[1]);
+            yMin = std::min(yMin, v[1]);
+
+            iss >> v[2];
+            zMax = std::max(zMax, v[2]);
+            zMin = std::min(zMin, v[2]);
+
             verts_.push_back(v);
         }
         /*else if (!line.compare(0, 3, "vn ")) {

@@ -1,4 +1,4 @@
-#include "maths.h"
+﻿#include "maths.h"
 
 float clamp(float f, float min, float max) {
 	return f < min ? min : (f > max ? max : f);
@@ -191,6 +191,28 @@ Matrix4x4 lookat(Vector3f eye, Vector3f target, Vector3f up) {
 	m[1][3] = -(y_axis * eye);
 	m[2][3] = -(z_axis * eye);
 
+	return m;
+}
+
+/*
+ *	2/(r-l)			  0				0	 -(r+l)/(r-l)
+ *		  0		2/(t-b)				0	 -(t+b)/(t-b)
+ *		  0			  0		 -2/(f-n)	 -(f+n)/(f-n)
+ *        0			  0				0				1
+ *
+ * see http://www.songho.ca/opengl/gl_projectionmatrix.html
+ */
+Matrix4x4 orthographic(float left, float right, float back, float top, float near, float far)
+{
+	Matrix4x4 m = Matrix4x4::identity();
+
+	m[0][0] = 2.0f / (right - left);
+	m[1][1] = 2.0f / (top - back);
+	m[2][2] = -2.0f / (far - near);//右手系变左手系
+
+	m[0][3] = -(right + left) / (right - left);
+	m[1][3] = -(top + back) / (top - back);
+	m[2][3] = -(near + far) / (far-near);
 	return m;
 }
 

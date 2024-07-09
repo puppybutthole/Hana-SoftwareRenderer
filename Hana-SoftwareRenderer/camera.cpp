@@ -1,4 +1,6 @@
-﻿#include <assert.h>
+﻿#include "ConstDefine.h"
+
+#include <assert.h>
 #include <stdlib.h>
 #include "camera.h"
 #include "iostream"
@@ -8,8 +10,6 @@
  * https://github.com/mrdoob/three.js/blob/master/examples/js/controls/OrbitControls.js
  */
 
-static const float NEAR = 0.1f;
-static const float FAR = 10000;
 static const float FOVY = TO_RADIANS(60);
 static const Vector3f UP = { 0, 1, 0 };
 
@@ -87,8 +87,13 @@ Matrix4x4 Camera::get_view_matrix() {
 }
 
 Matrix4x4 Camera::get_proj_matrix() {
-	//Matrix4x4 m = perspective(FOVY, aspect, NEAR, FAR);
-	Matrix4x4 m = orthographic(aspect, 1, NEAR, FAR);//透视变正交投影
+	Matrix4x4 m = perspective(FOVY, aspect, NEAR, FAR);
+	return m;
+}
+
+Matrix4x4 Camera::get_ortho_proj_matrix(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax)
+{
+	Matrix4x4 m = orthographic(xMin, xMax, yMin, yMax, zMin, zMax);
 	return m;
 }
 

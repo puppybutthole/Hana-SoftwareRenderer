@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "vector.h"
 #include "matrix.h"
@@ -23,5 +23,7 @@ Matrix4x4 rotate_x(float angle);
 Matrix4x4 rotate_y(float angle);
 Matrix4x4 rotate_z(float angle);
 Matrix4x4 lookat(Vector3f eye, Vector3f target, Vector3f up);
+
+Matrix4x4 orthographic(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax);
 Matrix4x4 orthographic(float right, float top, float near, float far);
 Matrix4x4 perspective(float fovy, float aspect, float near, float far);

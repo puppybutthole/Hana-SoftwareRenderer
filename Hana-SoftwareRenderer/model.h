@@ -15,12 +15,20 @@ class Model
 public:
     std::vector<Vector3f> verts_;
     std::vector<std::vector<Vector3i> > faces_; // attention, this Vec3i means vertex/uv/normal
-    std::vector<Vector3i> _triangleIdx;
-    //std::vector<Vector3f> norms_;
-    //std::vector<Vector2f> uv_;
-    TGAImage diffusemap_;
-    TGAImage normalmap_;
-    TGAImage specularmap_;
+    std::vector<Vector3i> _triangleIdx;//自定义数据，用于替换原来带法向与纹理坐标的faces_
+    std::vector<Vector3f> norms_;//待删除
+    std::vector<Vector2f> uv_;//待删除
+
+    float xMin = 1.0e30f;
+    float xMax = -1.0e30f;
+    float yMin = 1.0e30f;
+    float yMax = -1.0e30f;
+    float zMin = 1.0e30f;
+    float zMax = -1.0e30f;
+
+    TGAImage diffusemap_;//待删除
+    TGAImage normalmap_;//待删除
+    TGAImage specularmap_;//待删除
     void load_texture(std::string filename, const char *suffix, TGAImage &img);
 public:
     Model(const char *filename);

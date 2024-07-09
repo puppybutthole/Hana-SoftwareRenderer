@@ -109,5 +109,8 @@
     <ClInclude Include="mathapi.h">
       <Filter>math</Filter>
     </ClInclude>
+    <ClInclude Include="ConstDefine.h">
+      <Filter>core</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,3 +1,5 @@
+﻿#include "ConstDefine.h"
+
 #include <assert.h>
 #include <math.h>
 #include <stdlib.h>
@@ -377,7 +379,11 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
 
             // fragment shader
-            Color color = Color::White /** (50.f / interpolate_v2f.clip_pos[2])*/;
+            static const float zMin_plus = -0.21f * draw_data->model->zMax + 1.21f * draw_data->model->zMin;
+            static const float zMax_plus = 1.21f * draw_data->model->zMax - 0.21f * draw_data->model->zMin;
+
+            float colorRatio = (interpolate_v2f.world_pos[2] - zMin_plus) / (zMax_plus - zMin_plus);
+            Color color = Color::White * colorRatio;
             //bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
 
             // 绘制像素

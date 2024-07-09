@@ -1,4 +1,5 @@
-#pragma once
+﻿#pragma once
+#include "ConstDefine.h"
 
 #include "mathapi.h"
 #include "gameobject.h"
@@ -58,8 +59,15 @@ public:
 
     void draw(Camera* camera, RenderBuffer* frameBuffer, bool enable_shadow)
     {
+        //camera->set_transform(Vector3f(0, 0, gameobject->model->zMax + 1.0f), Vector3f(0, 0, 0));
         Matrix4x4 view_matrix = camera->get_view_matrix();
-        Matrix4x4 projection_matrix = camera->get_proj_matrix();
+        float cameraDistance = sqrt(camera->get_position().x * camera->get_position().x + camera->get_position().y * camera->get_position().y + camera->get_position().z * camera->get_position().z);
+        
+        Matrix4x4 projection_matrix = camera->get_ortho_proj_matrix(gameobject->model->xMin- cameraDistance, gameobject->model->xMax+ cameraDistance,
+            gameobject->model->yMin- cameraDistance, gameobject->model->yMax+ cameraDistance, -gameobject->model->zMax, FAR);
+
+        //Matrix4x4 projection_matrix = camera->get_proj_matrix();
+
         Matrix4x4 model_matrix = gameobject->GetModelMatrix();
         Matrix4x4 model_matrix_I = model_matrix.invert();
 

@@ -5,6 +5,7 @@
 shader_struct_v2f GroundShader::vertex(shader_struct_a2v* a2v) {
 	shader_struct_v2f v2f;
 	v2f.clip_pos = ObjectToClipPos(a2v->obj_pos);
+	v2f.world_pos = ObjectToWorldPos(a2v->obj_pos);
 	//v2f.intensity = saturate(ObjectToWorldNormal(a2v->obj_normal) * WorldLightDir());
 	return v2f;
 }

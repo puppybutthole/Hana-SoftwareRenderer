@@ -1,11 +1,11 @@
-#ifndef CAMERA_H
+﻿#ifndef CAMERA_H
 #define CAMERA_H
 
 #include "mathapi.h"
 #include "platform.h"
 #include "camera.h"
 
-static const Vector3f CAMERA_POSITION = { 0, 0, 5.f };
+static const Vector3f CAMERA_POSITION = { 0, 0, 300.f };
 static const Vector3f CAMERA_TARGET = { 0, 0, 0 };
 
 struct Motion { Vector2f orbit; Vector2f pan; float dolly; };
@@ -27,6 +27,7 @@ public:
 	Vector3f get_position();
 	Vector3f get_forward();
 	Matrix4x4 get_view_matrix();
+	Matrix4x4 get_ortho_proj_matrix(float xMin, float xMax, float yMin, float yMax, float zMin, float zMax);
 	Matrix4x4 get_proj_matrix();
 
 	Vector3f get_target_position();
