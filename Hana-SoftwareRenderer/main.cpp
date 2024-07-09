@@ -6,6 +6,7 @@
 #include "MAPPModelInfo/ModelInfo.h"
 #include "MAPPUtilsFun/ModelInfoJsonSerializer.h"
 
+#include <Windows.h>
 static const char* const WINDOW_TITLE = "MAPP-SoftwareRenderer";
 static const int WINDOW_WIDTH = 1000;
 static const int WINDOW_HEIGHT = 600;
@@ -77,8 +78,13 @@ void key_callback(window_t* window, keycode_t key, int pressed) {
 
 int main()
 {
+    const char* homeProfile = "USERPROFILE";
+    char homePath[1024] = { 0 };
+    GetEnvironmentVariableA(homeProfile, homePath, 1024);
+    std::string userNamestr = std::string(homePath);
+
     MAPPData::ModelInfo modelInfo;
-    ModelInfoJsonSerializer::ModelInfoBinDeserializer("C:\\Users\\ThinkPad\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.bin", modelInfo);
+    ModelInfoJsonSerializer::ModelInfoBinDeserializer(userNamestr + "\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.bin", modelInfo);
 
     const auto& mesh = modelInfo.m_mesh;
 
@@ -95,7 +101,7 @@ int main()
     int show_num_frames = 0;
     int show_avg_millis = 0;
     float refresh_screen_text_timer = 0;
-    const float REFRESH_SCREEN_TEXT_TIME = 0.1;
+    const float REFRESH_SCREEN_TEXT_TIME = 0.1f;
     snprintf(screen_text, text_size, "fps: - -, avg: - -ms\n");
     window = window_create(WINDOW_TITLE, WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TEXT_WIDTH, WINDOW_TEXT_HEIGHT);
     frame_buffer = new RenderBuffer(WINDOW_WIDTH, WINDOW_HEIGHT);
@@ -177,7 +183,7 @@ int main()
 
         // 清除颜色缓存和深度缓存
         frame_buffer->renderbuffer_clear_color(Color::Black);
-        frame_buffer->renderbuffer_clear_depth(std::numeric_limits<float>::max());
+        frame_buffer->renderbuffer_clear_depth(1e30f);
 
         input_poll_events();
     }
