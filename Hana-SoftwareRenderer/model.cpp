@@ -2,8 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include "model.h"
-
-Model::Model(const char* filename) : verts_(), faces_(), norms_(), uv_(), diffusemap_(), normalmap_(), specularmap_()
+#include "MAPPModelInfo/Mesh.h"
+Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ diffusemap_(), normalmap_(), specularmap_()
 {
     std::ifstream in;
     in.open(filename, std::ifstream::in);
@@ -72,6 +72,30 @@ Model::Model(const char* filename) : verts_(), faces_(), norms_(), uv_(), diffus
     /*load_texture(filename, "_diffuse.tga", diffusemap_);
     load_texture(filename, "_nm_tangent.tga", normalmap_);
     load_texture(filename, "_spec.tga", specularmap_);*/
+    return;
+}
+
+Model::Model(const MAPPData::Mesh& mesh)
+{
+    
+    for (const auto& ver:mesh.m_points)
+    {
+        Vector3f v;
+        v[0] = ver[0];
+        v[1] = ver[1];
+        v[2] = ver[2];
+        verts_.push_back(v);
+    }
+    for (const auto& triangle : mesh.m_triangles)
+    {
+        const auto& index = triangle._pointIndex;
+        std::vector<Vector3i> f(3);
+        f[0][0] = index[0];
+        f[2][0] = index[1];
+        f[1][0] = index[2];
+        faces_.push_back(f);
+    }
+
 }
 
 Model::~Model() {}
@@ -132,10 +156,10 @@ Vector3f Model::normal(Vector2f uvf)
     return res;
 }
 
-Vector2f Model::uv(int iface, int nthvert)
-{
-    return uv_[faces_[iface][nthvert][1]];
-}
+//Vector2f Model::uv(int iface, int nthvert)
+//{
+//    return uv_[faces_[iface][nthvert][1]];
+//}
 
 float Model::specular(Vector2f uvf)
 {
@@ -143,11 +167,11 @@ float Model::specular(Vector2f uvf)
     return specularmap_.get(uv[0], uv[1])[0] / 1.f;
 }
 
-Vector3f Model::normal(int iface, int nthvert)
-{
-    int idx = faces_[iface][nthvert][2];
-    return norms_[idx].normalize();
-}
+//Vector3f Model::normal(int iface, int nthvert)
+//{
+//    int idx = faces_[iface][nthvert][2];
+//    return norms_[idx].normalize();
+//}
 
 TGAImage* Model::get_diffuse_map()
 {

@@ -8,6 +8,12 @@
 static Color AMBIENT = Color(54.f / 255, 58.f / 255, 66.f / 255);
 //static Color LightColor = Color(255.f / 255, 244.f / 255, 214.f / 255);
 
+
+namespace MAPPData
+{
+    class Mesh;
+}
+
 class DrawModel {
 public:
     GameObject* light;
@@ -128,6 +134,7 @@ private:
     int cur_shader_index;
 public:
     SingleModelScene(const char* file_name, RenderBuffer* render_Buffer);
+    SingleModelScene(const MAPPData::Mesh& mesh, RenderBuffer* render_Buffer);
     ~SingleModelScene();
 
     void tick(float delta_time) override;

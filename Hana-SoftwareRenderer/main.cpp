@@ -3,7 +3,10 @@
 #include "platform.h"
 #include "scene.h"
 
-static const char* const WINDOW_TITLE = "Hana-SoftwareRenderer";
+#include "MAPPModelInfo/ModelInfo.h"
+#include "MAPPUtilsFun/ModelInfoJsonSerializer.h"
+
+static const char* const WINDOW_TITLE = "MAPP-SoftwareRenderer";
 static const int WINDOW_WIDTH = 1000;
 static const int WINDOW_HEIGHT = 600;
 static const int WINDOW_TEXT_WIDTH = 250;
@@ -28,25 +31,42 @@ static SceneInfo load_scene(int scene_index)
 
     SceneInfo ret{};
 
-    switch (scene_index)
-    {
-    case 0:
-        ret.name = "1.african_head";
-        ret.scene = new SingleModelScene("../assets/african_head/african_head.obj", frame_buffer);
-        break;
-    case 1:
-        ret.name = "2.diablo3_pose";
-        ret.scene = new SingleModelScene("../assets/diablo3_pose/diablo3_pose.obj", frame_buffer);
-        break;
-    //default:
+    ret.name = "MAPPModelInfo";
+    ret.scene = new SingleModelScene("../assets/african_head/african_head.obj",frame_buffer);
+
+
+    //switch (scene_index)
+    //{
+    //case 0:
+    //    ret.name = "1.african_head";
+    //    ret.scene = new SingleModelScene("../assets/african_head/african_head.obj", frame_buffer);
+    //    break;
+    //case 1:
     //    ret.name = "2.diablo3_pose";
     //    ret.scene = new SingleModelScene("../assets/diablo3_pose/diablo3_pose.obj", frame_buffer);
-        break;
-    }
+    //    break;
+    ////default:
+    ////    ret.name = "2.diablo3_pose";
+    ////    ret.scene = new SingleModelScene("../assets/diablo3_pose/diablo3_pose.obj", frame_buffer);
+    //    break;
+    //}
 
     return ret;
 }
 
+static SceneInfo load_scene(const MAPPData::Mesh& mesh)
+{
+    if (scene_info.scene)
+    {
+        delete scene_info.scene;
+    }
+
+    SceneInfo ret{};
+
+    ret.name = "MAPPModelInfo";
+    ret.scene = new SingleModelScene(mesh, frame_buffer);
+    return ret;
+}
 
 void key_callback(window_t* window, keycode_t key, int pressed) {
     if (scene_info.scene)
@@ -57,6 +77,12 @@ void key_callback(window_t* window, keycode_t key, int pressed) {
 
 int main()
 {
+    MAPPData::ModelInfo modelInfo;
+    ModelInfoJsonSerializer::ModelInfoBinDeserializer("C:\\Users\\ThinkPad\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.bin", modelInfo);
+
+    const auto& mesh = modelInfo.m_mesh;
+
+
     platform_initialize();
     window_t* window;
     Record record = Record();
@@ -76,7 +102,7 @@ int main()
 
     int scene_index = 0;
 
-    scene_info = load_scene(scene_index);
+    scene_info = load_scene(mesh);
     callbacks.button_callback = button_callback;
     callbacks.scroll_callback = scroll_callback;
     callbacks.key_callback = key_callback;
@@ -94,17 +120,11 @@ int main()
         // 更新摄像机控制
         update_camera(window, scene_info.scene->camera, &record);
 
-        if (input_key_pressed(window, KEY_W))
+        if (input_key_pressed(window, KEY_Q))
         {
-            scene_index = (scene_index - 1 + scene_count) % scene_count;
-            scene_info = load_scene(scene_index);
+            scene_info = load_scene(mesh);
         }
-        else if (input_key_pressed(window, KEY_S))
-        {
-            scene_index = (scene_index + 1 + scene_count) % scene_count;
-            scene_info = load_scene(scene_index);
-        }
-
+        
         // 更新场景
         scene_info.scene->tick(delta_time);
 
@@ -138,7 +158,8 @@ int main()
 
             snprintf(line, 50, "scene: %s\n", scene_info.name);
             strcat(screen_text, line);
-            snprintf(line, 50, "press key [W] or [S] to switch scene\n\n");
+            //snprintf(line, 50, "press key [W] or [S] to switch scene\n\n");
+            snprintf(line, 50, "press key [Q] to reload scene\n\n");
             strcat(screen_text, line);
 
             strcat(screen_text, scene_info.scene->get_text());

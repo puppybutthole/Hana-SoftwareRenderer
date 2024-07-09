@@ -5,19 +5,26 @@
 #include "tgaimage.h"
 #include "mathapi.h"
 
-class Model {
+namespace MAPPData
+{
+    class Mesh;
+}
+
+class Model
+{
 public:
     std::vector<Vector3f> verts_;
     std::vector<std::vector<Vector3i> > faces_; // attention, this Vec3i means vertex/uv/normal
     std::vector<Vector3i> _triangleIdx;
-    std::vector<Vector3f> norms_;
-    std::vector<Vector2f> uv_;
+    //std::vector<Vector3f> norms_;
+    //std::vector<Vector2f> uv_;
     TGAImage diffusemap_;
     TGAImage normalmap_;
     TGAImage specularmap_;
     void load_texture(std::string filename, const char *suffix, TGAImage &img);
 public:
     Model(const char *filename);
+    Model(const MAPPData::Mesh& mesh);
     ~Model();
     int nverts();
     int nfaces();

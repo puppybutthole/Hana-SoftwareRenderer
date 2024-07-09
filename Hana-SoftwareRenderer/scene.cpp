@@ -1,4 +1,5 @@
 #include "scene.h"
+#include "MAPPModelInfo/Mesh.h"
 
 Scene::Scene(RenderBuffer* render_Buffer) {
     this->frameBuffer = render_Buffer;
@@ -101,6 +102,32 @@ SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_B
 
     draw_model = new DrawModel(/*light, */gameobject, material, shaderInfos[cur_shader_index].shader);
 }
+
+
+SingleModelScene::SingleModelScene(const MAPPData::Mesh& mesh, RenderBuffer* render_Buffer) :Scene(render_Buffer)
+{
+    gameobject = new GameObject_StaticModel(mesh);
+
+    material = new Material();
+    material->diffuse_map = gameobject->model->get_diffuse_map();
+    material->normal_map = gameobject->model->get_normal_map();
+    material->specular_map = gameobject->model->get_specular_map();
+    material->color = Color::White;
+    material->specular = Color::White;
+    material->gloss = 50;
+    material->bump_scale = 1;
+
+
+    shaderInfos[0].des = "Ground";
+    shaderInfos[0].shader = new GroundShader();
+
+
+    cur_shader_index = 0;
+
+    draw_model = new DrawModel(/*light, */gameobject, material, shaderInfos[cur_shader_index].shader);
+}
+
+
 
 SingleModelScene::~SingleModelScene() {
     delete draw_model;

@@ -105,16 +105,19 @@
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <OpenMPSupport>true</OpenMPSupport>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <AdditionalIncludeDirectories>C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\MAPP\include;C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency;C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\eigen-3.4.0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\MAPP\lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MAPPModelInfod.lib;MAPPUtilsFund.lib;MAPPCommonUtilsd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>md $(OutputPath)assets
-xcopy /Y /S $(ProjectDir)assets $(OutputPath)assets</Command>
+xcopy /Y /S $(ProjectDir)assets $(OutputPath)assets
+xcopy /Y /S /D $(ProjectDir)dependency\MAPP\dll\$(Configuration)\*.dll $(OutputPath)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -126,19 +129,20 @@ xcopy /Y /S $(ProjectDir)assets $(OutputPath)assets</Command>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <DisableSpecificWarnings>4996</DisableSpecificWarnings>
-      <AdditionalIncludeDirectories>
-      </AdditionalIncludeDirectories>
-      <OpenMPSupport>true</OpenMPSupport>
+      <AdditionalIncludeDirectories>C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\MAPP\include;C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency;C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\eigen-3.4.0</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>C:\Users\ThinkPad\Documents\GitHub\NewSoftwareRenderer\Hana-SoftwareRenderer\dependency\MAPP\lib\$(Configuration)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>MAPPModelInfo.lib;MAPPUtilsFun.lib;MAPPCommonUtils.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>md $(OutputPath)assets
-xcopy /Y /S $(ProjectDir)assets $(OutputPath)assets</Command>
+xcopy /Y /S $(ProjectDir)assets $(OutputPath)assets
+xcopy /Y /S /D $(ProjectDir)dependency\MAPP\dll\$(Configuration)\*.dll $(OutputPath)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

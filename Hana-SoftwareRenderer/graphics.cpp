@@ -377,7 +377,7 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             interpolate_varyings(v2f, &interpolate_v2f, sizeof(shader_struct_v2f), barycentric_weights, recip_w);
 
             // fragment shader
-            Color color = Color::White * (50.f / interpolate_v2f.clip_pos[2]);
+            Color color = Color::White /** (50.f / interpolate_v2f.clip_pos[2])*/;
             //bool discard = draw_data->shader->fragment(&interpolate_v2f, color);
 
             // 绘制像素
