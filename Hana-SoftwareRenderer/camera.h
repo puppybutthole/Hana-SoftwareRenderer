@@ -5,7 +5,7 @@
 #include "platform.h"
 #include "camera.h"
 
-static const Vector3f CAMERA_POSITION = { 0, 0, 2.f };
+static const Vector3f CAMERA_POSITION = { 0, 0, 5.f };
 static const Vector3f CAMERA_TARGET = { 0, 0, 0 };
 
 struct Motion { Vector2f orbit; Vector2f pan; float dolly; };
@@ -46,8 +46,8 @@ struct Record {
 	/* zoom */
 	float dolly_delta;
 	/* light */
-	float light_theta;
-	float light_phi;
+	//float light_theta;
+	//float light_phi;
 	/* click */
 	float press_time;
 	float release_time;
@@ -67,5 +67,4 @@ Vector2f get_cursor_pos(window_t* window);
 void scroll_callback(window_t* window, float offset);
 void button_callback(window_t* window, button_t button, int pressed);
 void update_camera(window_t* window, Camera* camera, Record* record);
-
 #endif

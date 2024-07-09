@@ -4,7 +4,7 @@ Scene::Scene(RenderBuffer* render_Buffer) {
     this->frameBuffer = render_Buffer;
     float aspect = (float)this->frameBuffer->width / (float)this->frameBuffer->height;
     camera = new Camera(CAMERA_POSITION, CAMERA_TARGET, aspect);
-    light = new GameObject(Vector3f(2, 2, 2));
+    //light = new GameObject(Vector3f(2, 2, 2));
     enable_shadow = true;
 }
 
@@ -12,9 +12,9 @@ void Scene::tick(float delta_time) {
     Vector3f camera_pos = camera->get_position();
     Vector3f camera_dir = camera->get_forward();
 
-    Vector3f light_pos = light->transform.position;
+    //Vector3f light_pos = light->transform.position;
     Vector3f target_pos = camera->get_target_position();
-    Vector3f light_dir = (light_pos - target_pos).normalize();
+    //Vector3f light_dir = (light_pos - target_pos).normalize();
 
     snprintf(text, 500, "");
 
@@ -31,19 +31,19 @@ void Scene::tick(float delta_time) {
     strcat(text, line);
 
 
-    snprintf(line, 50, "light dir: (%.1f, %.1f, %.1f)\n", TO_DEGREES(light_dir.x), TO_DEGREES(light_dir.y), TO_DEGREES(light_dir.z));
-    strcat(text, line);
-    snprintf(line, 50, "press key [A] or [D] to rotate light dir\n\n");
-    strcat(text, line);
+    //snprintf(line, 50, "light dir: (%.1f, %.1f, %.1f)\n", TO_DEGREES(light_dir.x), TO_DEGREES(light_dir.y), TO_DEGREES(light_dir.z));
+    //strcat(text, line);
+    //snprintf(line, 50, "press key [A] or [D] to rotate light dir\n\n");
+    //strcat(text, line);
 
-    snprintf(line, 50, "shadow: %s\n", enable_shadow ? "On" : "Off");
-    strcat(text, line);
-    snprintf(line, 50, "press key [E] to switch shadow\n\n");
-    strcat(text, line);
+    //snprintf(line, 50, "shadow: %s\n", enable_shadow ? "On" : "Off");
+    //strcat(text, line);
+    //snprintf(line, 50, "press key [E] to switch shadow\n\n");
+    //strcat(text, line);
 }
 
 void Scene::on_key_input(keycode_t key, int pressed) {
-    if (pressed)
+    /*if (pressed)
     {
         switch (key)
         {
@@ -59,7 +59,7 @@ void Scene::on_key_input(keycode_t key, int pressed) {
         default:
             break;
         }
-    }
+    }*/
 }
 
 char* Scene::get_text() {
@@ -68,7 +68,7 @@ char* Scene::get_text() {
 
 Scene::~Scene() {
     delete camera;
-    delete light;
+    //delete light;
 }
 
 SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_Buffer) :Scene(render_Buffer) {
@@ -99,7 +99,7 @@ SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_B
 
     cur_shader_index = 0;
 
-    draw_model = new DrawModel(light, gameobject, material, shaderInfos[cur_shader_index].shader);
+    draw_model = new DrawModel(/*light, */gameobject, material, shaderInfos[cur_shader_index].shader);
 }
 
 SingleModelScene::~SingleModelScene() {

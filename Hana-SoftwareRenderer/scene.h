@@ -6,7 +6,7 @@
 #include "platform.h"
 
 static Color AMBIENT = Color(54.f / 255, 58.f / 255, 66.f / 255);
-static Color LightColor = Color(255.f / 255, 244.f / 255, 214.f / 255);
+//static Color LightColor = Color(255.f / 255, 244.f / 255, 214.f / 255);
 
 class DrawModel {
 public:
@@ -21,9 +21,9 @@ public:
     ShadowShader* shadow_shader;
 
 
-    DrawModel(GameObject* light, GameObject_StaticModel* go, Material* material, IShader* shader)
+    DrawModel(/*GameObject* light, */GameObject_StaticModel* go, Material* material, IShader* shader)
     {
-        this->light = light;
+        /*this->light = light;*/
         this->gameobject = go;
         this->material = material;
         this->shader = shader;
@@ -58,15 +58,15 @@ public:
         Matrix4x4 model_matrix_I = model_matrix.invert();
 
         shader_data->view_Pos = camera->get_position();
-        shader_data->light_dir = (light->transform.position - camera->get_target_position()).normalize();
-        shader_data->light_color = LightColor;
+        //shader_data->light_dir = (light->transform.position - camera->get_target_position()).normalize();
+        //shader_data->light_color = LightColor;
         shader_data->ambient = AMBIENT;
         shader_data->model_matrix = model_matrix;
         shader_data->model_matrix_I = model_matrix_I;
         shader_data->view_matrix = view_matrix;
         shader_data->projection_matrix = projection_matrix;
         float aspect = (float)frameBuffer->width / (float)frameBuffer->height;
-        shader_data->light_vp_matrix = orthographic(aspect, 1, 0, 5) * lookat(light->transform.position, camera->get_target_position(), Vector3f(0, 1, 0));
+        //shader_data->light_vp_matrix = orthographic(aspect, 1, 0, 5) * lookat(light->transform.position, camera->get_target_position(), Vector3f(0, 1, 0));
         shader_data->camera_vp_matrix = projection_matrix * view_matrix;
         shader_data->enable_shadow = enable_shadow;
 
@@ -106,7 +106,7 @@ struct ShaderInfo {
 
 class Scene {
 public:
-    GameObject* light;
+    //GameObject* light;
     Camera* camera;
     RenderBuffer* frameBuffer;
     char text[500];
