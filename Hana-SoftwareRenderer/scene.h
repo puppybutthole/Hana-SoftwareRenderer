@@ -6,6 +6,8 @@
 #include "camera.h"
 #include "platform.h"
 
+#define ORTHO
+
 static Color AMBIENT = Color(54.f / 255, 58.f / 255, 66.f / 255);
 //static Color LightColor = Color(255.f / 255, 244.f / 255, 214.f / 255);
 
@@ -18,7 +20,7 @@ namespace MAPPData
 
 class DrawModel {
 public:
-    GameObject* light;
+    //GameObject* light;
     GameObject_StaticModel* gameobject;
     Material* material;
     ShaderData* shader_data;
@@ -62,11 +64,37 @@ public:
     {
         //camera->set_transform(Vector3f(0, 0, gameobject->model->zMax + 1.0f), Vector3f(0, 0, 0));
         Matrix4x4 view_matrix = camera->get_view_matrix();
+        
+#ifdef ORTHO
         float cameraDistance = sqrt(camera->get_position().x * camera->get_position().x + camera->get_position().y * camera->get_position().y + camera->get_position().z * camera->get_position().z);
         
-        Matrix4x4 projection_matrix = camera->get_ortho_proj_matrix(gameobject->model->xMin- cameraDistance, gameobject->model->xMax+ cameraDistance,gameobject->model->yMin- cameraDistance, gameobject->model->yMax+ cameraDistance, -gameobject->model->zMax, FAR);
+        float alpha = cameraDistance / (gameobject->model->zMax - gameobject->model->zMin);
+        float orthoBoxLeft = alpha * gameobject->model->xMin + 0.5f * (1.0f - alpha) * ( gameobject->model->xMin + alpha * gameobject->model->xMax);
+        float orthoBoxRight  = alpha * gameobject->model->xMax + 0.5f * (1.0f - alpha) * ( gameobject->model->xMin + alpha * gameobject->model->xMax);
+        float orthoBoxDown = alpha * gameobject->model->yMin + 0.5f * (1.0f - alpha) * (gameobject->model->yMin + alpha * gameobject->model->yMax);
+        float orthoBoxTop = alpha * gameobject->model->yMax + 0.5f * (1.0f - alpha) * (gameobject->model->yMin + alpha * gameobject->model->yMax);
+        float orthoBoxNear = alpha * gameobject->model->zMin + 0.5f * (1.0f - alpha) * ( gameobject->model->zMin + alpha * gameobject->model->zMax);
+        float orthoBoxFar = alpha * gameobject->model->zMax + 0.5f * (1.0f - alpha) * ( gameobject->model->zMin + alpha * gameobject->model->zMax);
 
-        //Matrix4x4 projection_matrix = camera->get_proj_matrix();
+        float boxLeftDown = std::min(orthoBoxLeft,orthoBoxDown);
+        float boxRightTop = std::max(orthoBoxRight, orthoBoxTop);
+
+        Matrix4x4 projection_matrix = camera->get_ortho_proj_matrix(
+
+            boxLeftDown, boxRightTop, boxLeftDown, boxRightTop,-FAR * alpha,FAR*alpha
+
+            //gameobject->model->xMin - 1.f, gameobject->model->xMax + 1.f,
+            //gameobject->model->yMin - 1.f, gameobject->model->yMax + 1.f,
+            //gameobject->model->zMin - 10.f, gameobject->model->zMax + 10.f
+
+            /*gameobject->model->xMin - cameraDistance, gameobject->model->xMax + cameraDistance,
+            gameobject->model->yMin - cameraDistance, gameobject->model->yMax + cameraDistance,
+            gameobject->model->zMin - cameraDistance, gameobject->model->zMax + cameraDistance*/
+        );
+#endif // ORTHO
+#ifndef ORTHO
+        Matrix4x4 projection_matrix = camera->get_proj_matrix();
+#endif // !ORTHO
 
         Matrix4x4 model_matrix = gameobject->GetModelMatrix();
         Matrix4x4 model_matrix_I = model_matrix.invert();
