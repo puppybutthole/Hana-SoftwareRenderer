@@ -17,7 +17,7 @@ class Model
 public:
     std::vector<Vector3f> verts_;
     std::vector<std::vector<Vector3i> > faces_; // attention, this Vec3i means vertex/uv/normal
-    //std::vector<Vector3f> faceNormal_;
+    std::vector<Vector3f> faceNormal_;
     std::unordered_map<int, std::vector<int>> idMap_;
     //std::vector<Vector3i> _triangleIdx;//自定义数据，用于替换原来带法向与纹理坐标的faces_
     //std::vector<Vector3f> norms_;//待删除

@@ -94,7 +94,8 @@ void RenderBuffer::renderbuffer_clear_depth(float depth)
 {
     int num_pixels = this->width * this->height;
     int i;
-    for (i = 0; i < num_pixels; i++) {
+    for (i = 0; i < num_pixels; i++)
+    {
         this->depth_buffer[i] = depth;
     }
 }

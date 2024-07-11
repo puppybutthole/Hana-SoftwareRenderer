@@ -27,9 +27,9 @@ public:
     ShaderData* shader_data;
     DrawData* shadow_draw_data;
     DrawData* draw_data;
-    RenderBuffer* shdaow_map;
+    //RenderBuffer* shdaow_map;
     IShader* shader;
-    ShadowShader* shadow_shader;
+    //ShadowShader* shadow_shader;
 
 
     DrawModel(/*GameObject* light, */GameObject_StaticModel* go, Material* material, IShader* shader)
@@ -40,11 +40,11 @@ public:
         this->shader = shader;
 
         shader_data = new ShaderData();
-        shader_data->matrial = material;
+        //shader_data->matrial = material;
 
-        shadow_draw_data = nullptr;
-        shadow_shader = nullptr;
-        shdaow_map = nullptr;
+        //shadow_draw_data = nullptr;
+        //shadow_shader = nullptr;
+        //shdaow_map = nullptr;
 
         draw_data = new DrawData();
         draw_data->model = gameobject->model;
@@ -56,12 +56,12 @@ public:
     {
         delete shader_data;
         delete draw_data;
-        if (shadow_shader) delete shadow_shader;
-        if (shdaow_map)  delete shdaow_map;
+        //if (shadow_shader) delete shadow_shader;
+        //if (shdaow_map)  delete shdaow_map;
         if (shadow_draw_data)  delete shadow_draw_data;
     }
 
-    void draw(Camera* camera, RenderBuffer* frameBuffer, bool enable_shadow)
+    void draw(Camera* camera, RenderBuffer* frameBuffer/*, bool enable_shadow*/)
     {
         //camera->set_transform(Vector3f(0, 0, gameobject->model->zMax + 1.0f), Vector3f(0, 0, 0));
         Matrix4x4 view_matrix = camera->get_view_matrix();
@@ -111,7 +111,7 @@ public:
         float aspect = (float)frameBuffer->width / (float)frameBuffer->height;
         //shader_data->light_vp_matrix = orthographic(aspect, 1, 0, 5) * lookat(light->transform.position, camera->get_target_position(), Vector3f(0, 1, 0));
         shader_data->camera_vp_matrix = projection_matrix * view_matrix;
-        shader_data->enable_shadow = enable_shadow;
+        //shader_data->enable_shadow = enable_shadow;
 
         //if (enable_shadow)
         //{
@@ -155,7 +155,7 @@ public:
     Camera* camera;
     RenderBuffer* frameBuffer;
     char text[500];
-    bool enable_shadow;
+    //bool enable_shadow;
     Scene(RenderBuffer* frameBuffer);
     ~Scene();
 

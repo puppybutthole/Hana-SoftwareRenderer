@@ -9,10 +9,10 @@
 
 #include <Windows.h>
 static const char* const WINDOW_TITLE = "MAPP-SoftwareRenderer";
-static const int WINDOW_WIDTH = 1000;
-static const int WINDOW_HEIGHT = 1000;
+static const int WINDOW_WIDTH = 800;
+static const int WINDOW_HEIGHT = 800;
 static const int WINDOW_TEXT_WIDTH = 250;
-static const int WINDOW_TEXT_HEIGHT = 220;
+static const int WINDOW_TEXT_HEIGHT = 100;
 
 struct SceneInfo
 {
@@ -70,7 +70,7 @@ static SceneInfo load_scene(const MAPPData::ModelInfo& modelInfo)
     return ret;
 }
 
-void key_callback(window_t* window, keycode_t key, int pressed) {
+static void key_callback(window_t* window, keycode_t key, int pressed) {
     if (scene_info.scene)
     {
         scene_info.scene->on_key_input(key, pressed);
@@ -163,11 +163,11 @@ int main()
             snprintf(line, 50, "fps: %3d, avg: %3d ms\n\n", show_num_frames, show_avg_millis);
             strcat(screen_text, line);
 
-            snprintf(line, 50, "scene: %s\n", scene_info.name);
-            strcat(screen_text, line);
+            //snprintf(line, 50, "scene: %s\n", scene_info.name);
+            //strcat(screen_text, line);
             //snprintf(line, 50, "press key [W] or [S] to switch scene\n\n");
-            snprintf(line, 50, "press key [Q] to reload scene\n\n");
-            strcat(screen_text, line);
+            //snprintf(line, 50, "press key [Q] to reload scene\n\n");
+            //strcat(screen_text, line);
 
             strcat(screen_text, scene_info.scene->get_text());
 

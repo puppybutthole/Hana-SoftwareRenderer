@@ -148,12 +148,12 @@ Model::Model(const MAPPData::ModelInfo& modelInfo)
         f[2][0] = index[1];
         f[1][0] = index[2];
         faces_.push_back(f);
-        //
-        //Vector3f n;
-        //n[0] = triangle._normal[0];
-        //n[1] = triangle._normal[1];
-        //n[2] = triangle._normal[2];
-        //faceNormal_.push_back(n);
+
+        Vector3f n;
+        n[0] = triangle._normal[0];
+        n[1] = triangle._normal[1];
+        n[2] = triangle._normal[2];
+        faceNormal_.push_back(n);
     }
     const auto& faceData = modelInfo.GetFaceDataManager();
     idMap_ = faceData.m_faceIDToTriangleIndex;

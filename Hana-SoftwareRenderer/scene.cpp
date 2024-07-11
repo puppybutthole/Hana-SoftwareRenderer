@@ -8,7 +8,7 @@ Scene::Scene(RenderBuffer* render_Buffer)
     float aspect = (float)this->frameBuffer->width / (float)this->frameBuffer->height;
     camera = new Camera(CAMERA_POSITION, CAMERA_TARGET, aspect);
     //light = new GameObject(Vector3f(2, 2, 2));
-    enable_shadow = true;
+    //enable_shadow = true;
 }
 
 void Scene::tick(float delta_time)
@@ -27,12 +27,12 @@ void Scene::tick(float delta_time)
     strcat(text, line);
     snprintf(line, 50, "camera dir: (%.1f, %.1f, %.1f)\n", TO_DEGREES(camera_dir.x), TO_DEGREES(camera_dir.y), TO_DEGREES(camera_dir.z));
     strcat(text, line);
-    snprintf(line, 50, "press mouse [Left] to rotate camera\n");
-    strcat(text, line);
-    snprintf(line, 50, "press mouse [Right] to move camera\n");
-    strcat(text, line);
-    snprintf(line, 50, "press key [Space] to reset camera\n\n");
-    strcat(text, line);
+    //snprintf(line, 50, "press mouse [Left] to rotate camera\n");
+    //strcat(text, line);
+    //snprintf(line, 50, "press mouse [Right] to move camera\n");
+    //strcat(text, line);
+    //snprintf(line, 50, "press key [Space] to reset camera\n\n");
+    //strcat(text, line);
 
 
     //snprintf(line, 50, "light dir: (%.1f, %.1f, %.1f)\n", TO_DEGREES(light_dir.x), TO_DEGREES(light_dir.y), TO_DEGREES(light_dir.z));
@@ -151,13 +151,13 @@ void SingleModelScene::tick(float delta_time)
 {
     Scene::tick(delta_time);
 
-    char line[50] = "";
-    snprintf(line, 50, "shader: %s\n", shaderInfos[cur_shader_index].des);
-    strcat(text, line);
-    snprintf(line, 50, "press key [Q] to reload modelInfo\n\n");
-    strcat(text, line);
+    //char line[50] = "";
+    //snprintf(line, 50, "shader: %s\n", shaderInfos[cur_shader_index].des);
+    //strcat(text, line);
+    //snprintf(line, 50, "press key [Q] to reload modelInfo\n\n");
+    //strcat(text, line);
 
-    draw_model->draw(camera, frameBuffer, enable_shadow);
+    draw_model->draw(camera, frameBuffer/*, enable_shadow*/);
 }
 
 void SingleModelScene::on_key_input(keycode_t key, int pressed)
