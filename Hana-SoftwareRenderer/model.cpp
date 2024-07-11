@@ -4,7 +4,7 @@
 #include "model.h"
 #include "MAPPModelInfo/Mesh.h"
 #include "MAPPModelInfo/ModelInfo.h"
-Model::Model(const char* filename) : verts_(), faces_(), /*norms_(), uv_(),*/ diffusemap_(), normalmap_(), specularmap_()
+Model::Model(const char* filename) : verts_(), faces_()/*, norms_(), uv_(), diffusemap_(), normalmap_(), specularmap_()*/
 {
     std::ifstream in;
     in.open(filename, std::ifstream::in);
@@ -148,6 +148,12 @@ Model::Model(const MAPPData::ModelInfo& modelInfo)
         f[2][0] = index[1];
         f[1][0] = index[2];
         faces_.push_back(f);
+        //
+        //Vector3f n;
+        //n[0] = triangle._normal[0];
+        //n[1] = triangle._normal[1];
+        //n[2] = triangle._normal[2];
+        //faceNormal_.push_back(n);
     }
     const auto& faceData = modelInfo.GetFaceDataManager();
     idMap_ = faceData.m_faceIDToTriangleIndex;
@@ -195,32 +201,32 @@ void Model::load_texture(std::string filename, const char* suffix, TGAImage& img
     }
 }
 
-TGAColor Model::diffuse(Vector2f uvf)
-{
-    Vector2i uv(uvf[0] * diffusemap_.get_width(), uvf[1] * diffusemap_.get_height());
-    return diffusemap_.get(uv[0], uv[1]);
-}
-
-Vector3f Model::normal(Vector2f uvf)
-{
-    Vector2i uv(uvf[0] * normalmap_.get_width(), uvf[1] * normalmap_.get_height());
-    TGAColor c = normalmap_.get(uv[0], uv[1]);
-    Vector3f res;
-    for (int i = 0; i < 3; i++)
-        res[2 - i] = (float)c[i] / 255.f * 2.f - 1.f;
-    return res;
-}
+//TGAColor Model::diffuse(Vector2f uvf)
+//{
+//    Vector2i uv(uvf[0] * diffusemap_.get_width(), uvf[1] * diffusemap_.get_height());
+//    return diffusemap_.get(uv[0], uv[1]);
+//}
+//
+//Vector3f Model::normal(Vector2f uvf)
+//{
+//    Vector2i uv(uvf[0] * normalmap_.get_width(), uvf[1] * normalmap_.get_height());
+//    TGAColor c = normalmap_.get(uv[0], uv[1]);
+//    Vector3f res;
+//    for (int i = 0; i < 3; i++)
+//        res[2 - i] = (float)c[i] / 255.f * 2.f - 1.f;
+//    return res;
+//}
 
 //Vector2f Model::uv(int iface, int nthvert)
 //{
 //    return uv_[faces_[iface][nthvert][1]];
 //}
 
-float Model::specular(Vector2f uvf)
-{
-    Vector2i uv(uvf[0] * specularmap_.get_width(), uvf[1] * specularmap_.get_height());
-    return specularmap_.get(uv[0], uv[1])[0] / 1.f;
-}
+//float Model::specular(Vector2f uvf)
+//{
+//    Vector2i uv(uvf[0] * specularmap_.get_width(), uvf[1] * specularmap_.get_height());
+//    return specularmap_.get(uv[0], uv[1])[0] / 1.f;
+//}
 
 //Vector3f Model::normal(int iface, int nthvert)
 //{
@@ -228,17 +234,17 @@ float Model::specular(Vector2f uvf)
 //    return norms_[idx].normalize();
 //}
 
-TGAImage* Model::get_diffuse_map()
-{
-    return &diffusemap_;
-}
-
-TGAImage* Model::get_normal_map()
-{
-    return &normalmap_;
-}
-TGAImage* Model::get_specular_map()
-{
-    return &specularmap_;
-}
+//TGAImage* Model::get_diffuse_map()
+//{
+//    return &diffusemap_;
+//}
+//
+//TGAImage* Model::get_normal_map()
+//{
+//    return &normalmap_;
+//}
+//TGAImage* Model::get_specular_map()
+//{
+//    return &specularmap_;
+//}
 

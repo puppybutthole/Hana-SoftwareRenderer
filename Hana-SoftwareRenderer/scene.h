@@ -18,7 +18,8 @@ namespace MAPPData
     class ModelInfo;
 }
 
-class DrawModel {
+class DrawModel
+{
 public:
     //GameObject* light;
     GameObject_StaticModel* gameobject;
@@ -141,12 +142,14 @@ public:
     }
 };
 
-struct ShaderInfo {
+struct ShaderInfo
+{
     const char* des;
     IShader* shader;
 };
 
-class Scene {
+class Scene
+{
 public:
     //GameObject* light;
     Camera* camera;
@@ -161,7 +164,8 @@ public:
     char* get_text();
 };
 
-class SingleModelScene :public Scene {
+class SingleModelScene :public Scene
+{
 private:
     GameObject_StaticModel* gameobject;
     Material* material;

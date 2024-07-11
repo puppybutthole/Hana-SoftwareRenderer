@@ -6,10 +6,17 @@
 #include "graphics.h"
 
 #include <set>
+#include <unordered_set>
 
-std::set<int> occludedTrisSet;
+#define way1
+
+std::unordered_set<int> occludedTrisSet;
+
+#ifdef way1
+int gtriID = 0;
+#else
 int triangleIdx = 0;
-
+#endif // way1
 
 static void liner_interpolate_varyings(shader_struct_v2f* from, shader_struct_v2f* to, shader_struct_v2f* ret, int sizeof_varyings, float t)
 {
@@ -351,7 +358,11 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
     // 背面剔除
     if (is_back_facing(ndc_coords)) 
     {
+#ifdef way1
+        occludedTrisSet.insert(gtriID);
+#else
         occludedTrisSet.insert(triangleIdx);
+#endif
         return;
     }
 
@@ -397,14 +408,16 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 
             // 深度插值
             float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
-
-            
             // 深度测试
             float depth = render_buffer->get_depth(P.x, P.y);
             if (frag_depth > depth) 
             {
                 //只要有一个像素没有通过深度测试，则该三角形说明被遮挡了
+#ifdef way1
+                occludedTrisSet.insert(gtriID);
+#else
                 occludedTrisSet.insert(triangleIdx);
+#endif
                 continue;
             }
 
@@ -433,7 +446,11 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             {
                 render_buffer->set_depth(P.x, P.y, frag_depth);
                 render_buffer->set_color(P.x, P.y, color);
+#ifdef way1
+                render_buffer->set_triIdx(P.x, P.y, gtriID);
+#else
                 render_buffer->set_triIdx(P.x, P.y, triangleIdx);
+#endif
             }
         }
     }
@@ -443,12 +460,49 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 void graphics_draw_triangle(DrawData* draw_data)
 {
     int nfaces = draw_data->model->nfaces();
-
-
+#ifdef way1
+    gtriID;
+#else
     triangleIdx = 0;//当前的三角形下标
+#endif
     occludedTrisSet.clear();
+    const auto& faceIDMap = draw_data->model->idMap_;
 
+#ifdef way1
+    for (const auto& faceID2Tri : faceIDMap)
+    {
+        for (const auto& triID : faceID2Tri.second)
+        {
+            shader_struct_v2f v2fs[3] = {};
+            for (int j = 0; j < 3; ++j)
+            {
+                shader_struct_a2v a2v = {};
+                a2v.obj_pos = draw_data->model->vert(triID, j);
+                v2fs[j] = draw_data->shader->vertex(&a2v);
+            }
 
+            gtriID = triID;
+            shader_struct_v2f clip_v2fs[3 * 10] = {};
+            int num_vertices = clip_triangle(0, v2fs, clip_v2fs);
+            if (num_vertices < 3)
+            {
+                occludedTrisSet.insert(triID);
+            }
+            /* triangle assembly */
+            for (int j = 0; j < num_vertices - 2; ++j)
+            {
+                int index0 = 0;
+                int index1 = j + 1;
+                int index2 = j + 2;
+                shader_struct_v2f ret_v2fs[3];
+                ret_v2fs[0] = clip_v2fs[index0];
+                ret_v2fs[1] = clip_v2fs[index1];
+                ret_v2fs[2] = clip_v2fs[index2];
+                rasterize_triangle(draw_data, ret_v2fs);
+            }
+        }
+    }
+#else
     for (int i = 0; i < nfaces; ++i)
     {
         shader_struct_v2f v2fs[3] = {};
@@ -481,14 +535,11 @@ void graphics_draw_triangle(DrawData* draw_data)
 
             rasterize_triangle(draw_data, ret_v2fs);
         }
-
         ++triangleIdx;
-
     }
+#endif // way1
 
-
-    const auto& faceIDMap = draw_data->model->idMap_;
-    std::set<int> occludedFaceIDs;
+    std::unordered_set<int> occludedFaceIDs;
     for (const auto& faceIDTrisVecPair : faceIDMap)
     {
         for (const auto trisIDx : faceIDTrisVecPair.second)
@@ -499,7 +550,7 @@ void graphics_draw_triangle(DrawData* draw_data)
             }
         }
     }
-    std::set<int> visFaceIDs;
+    std::unordered_set<int> visFaceIDs;
     for (const auto& faceIDTrisVecPair : faceIDMap)
     {
         if (occludedFaceIDs.find(faceIDTrisVecPair.first) == occludedFaceIDs.end())
@@ -508,11 +559,11 @@ void graphics_draw_triangle(DrawData* draw_data)
         }
     }
 
-    for (auto faceID : visFaceIDs)
-    {
-        std::cout << faceID << ",";
-    }
-    std::cout << "\n\n";
+    //for (auto faceID : visFaceIDs)
+    //{
+    //    std::cout << faceID << ",";
+    //}
+    //std::cout << "\n\n";
 
     return;
 }

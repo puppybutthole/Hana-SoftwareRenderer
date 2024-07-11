@@ -2,7 +2,8 @@
 #include "MAPPModelInfo/Mesh.h"
 #include "MAPPModelInfo/ModelInfo.h"
 
-Scene::Scene(RenderBuffer* render_Buffer) {
+Scene::Scene(RenderBuffer* render_Buffer)
+{
     this->frameBuffer = render_Buffer;
     float aspect = (float)this->frameBuffer->width / (float)this->frameBuffer->height;
     camera = new Camera(CAMERA_POSITION, CAMERA_TARGET, aspect);
@@ -10,7 +11,8 @@ Scene::Scene(RenderBuffer* render_Buffer) {
     enable_shadow = true;
 }
 
-void Scene::tick(float delta_time) {
+void Scene::tick(float delta_time)
+{
     Vector3f camera_pos = camera->get_position();
     Vector3f camera_dir = camera->get_forward();
 
@@ -44,7 +46,8 @@ void Scene::tick(float delta_time) {
     //strcat(text, line);
 }
 
-void Scene::on_key_input(keycode_t key, int pressed) {
+void Scene::on_key_input(keycode_t key, int pressed)
+{
     /*if (pressed)
     {
         switch (key)
@@ -64,22 +67,25 @@ void Scene::on_key_input(keycode_t key, int pressed) {
     }*/
 }
 
-char* Scene::get_text() {
+char* Scene::get_text()
+{
     return text;
 }
 
-Scene::~Scene() {
+Scene::~Scene()
+{
     delete camera;
     //delete light;
 }
 
-SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_Buffer) :Scene(render_Buffer) {
+SingleModelScene::SingleModelScene(const char* file_name, RenderBuffer* render_Buffer) :Scene(render_Buffer)
+{
     gameobject = new GameObject_StaticModel(file_name);
 
     material = new Material();
-    material->diffuse_map = gameobject->model->get_diffuse_map();
-    material->normal_map = gameobject->model->get_normal_map();
-    material->specular_map = gameobject->model->get_specular_map();
+    //material->diffuse_map = gameobject->model->get_diffuse_map();
+    //material->normal_map = gameobject->model->get_normal_map();
+    //material->specular_map = gameobject->model->get_specular_map();
     material->color = Color::White;
     material->specular = Color::White;
     material->gloss = 50;
@@ -110,9 +116,9 @@ SingleModelScene::SingleModelScene(const MAPPData::ModelInfo& modelInfo, RenderB
     gameobject = new GameObject_StaticModel(modelInfo);
 
     material = new Material();
-    material->diffuse_map = gameobject->model->get_diffuse_map();
-    material->normal_map = gameobject->model->get_normal_map();
-    material->specular_map = gameobject->model->get_specular_map();
+    //material->diffuse_map = gameobject->model->get_diffuse_map();
+    //material->normal_map = gameobject->model->get_normal_map();
+    //material->specular_map = gameobject->model->get_specular_map();
     material->color = Color::White;
     material->specular = Color::White;
     material->gloss = 50;
@@ -130,7 +136,8 @@ SingleModelScene::SingleModelScene(const MAPPData::ModelInfo& modelInfo, RenderB
 
 
 
-SingleModelScene::~SingleModelScene() {
+SingleModelScene::~SingleModelScene()
+{
     delete draw_model;
     delete material;
     delete gameobject;
@@ -140,7 +147,8 @@ SingleModelScene::~SingleModelScene() {
     }
 }
 
-void SingleModelScene::tick(float delta_time) {
+void SingleModelScene::tick(float delta_time)
+{
     Scene::tick(delta_time);
 
     char line[50] = "";
