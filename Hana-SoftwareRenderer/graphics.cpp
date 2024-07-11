@@ -6,10 +6,10 @@
 #include "graphics.h"
 
 #include <set>
-#if _DEBUG
-std::set<int> gSet;
-int gNum = 0;
-#endif
+
+std::set<int> occludedTrisSet;
+int triangleIdx = 0;
+
 
 static void liner_interpolate_varyings(shader_struct_v2f* from, shader_struct_v2f* to, shader_struct_v2f* ret, int sizeof_varyings, float t)
 {
@@ -199,7 +199,8 @@ static bool is_back_facing(Vector3f* ndc_coords)
     float signed_area = a.x * b.y - a.y * b.x +
         b.x * c.y - b.y * c.x +
         c.x * a.y - c.y * a.x;
-    return signed_area <= 0;
+    //return signed_area >= 0;
+    return signed_area >= -1e-4f;
 }
 
 /*
@@ -346,9 +347,13 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
     // 齐次除法 / 透视除法 (homogeneous division / perspective division)
     Vector3f ndc_coords[3];
     for (int i = 0; i < 3; i++) ndc_coords[i] = proj<3>(v2f[i].clip_pos / v2f[i].clip_pos[3]);
-    
+
     // 背面剔除
-    if (is_back_facing(ndc_coords)) return;
+    if (is_back_facing(ndc_coords)) 
+    {
+        occludedTrisSet.insert(triangleIdx);
+        return;
+    }
 
     RenderBuffer* render_buffer = draw_data->render_buffer;
 
@@ -396,12 +401,20 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             
             // 深度测试
             float depth = render_buffer->get_depth(P.x, P.y);
-            if (frag_depth > depth) continue;
-#if _DEBUG
+            if (frag_depth > depth) 
+            {
+                //只要有一个像素没有通过深度测试，则该三角形说明被遮挡了
+                occludedTrisSet.insert(triangleIdx);
+                continue;
+            }
 
-            gSet.insert(gNum);
+            //--------------------------------通过深度测试-----------------------------------
 
-#endif // _DEBUG
+            int lastTriIdx = render_buffer->get_triIdx(P.x, P.y);
+            if (lastTriIdx!=-1)
+            {
+                occludedTrisSet.insert(lastTriIdx);
+            }
 
             // 变量插值
             shader_struct_v2f interpolate_v2f;
@@ -420,6 +433,7 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             {
                 render_buffer->set_depth(P.x, P.y, frag_depth);
                 render_buffer->set_color(P.x, P.y, color);
+                render_buffer->set_triIdx(P.x, P.y, triangleIdx);
             }
         }
     }
@@ -430,10 +444,10 @@ void graphics_draw_triangle(DrawData* draw_data)
 {
     int nfaces = draw_data->model->nfaces();
 
-#if _DEBUG
-    gNum = 0;
-    gSet.clear();
-#endif
+
+    triangleIdx = 0;//当前的三角形下标
+    occludedTrisSet.clear();
+
 
     for (int i = 0; i < nfaces; ++i)
     {
@@ -449,7 +463,10 @@ void graphics_draw_triangle(DrawData* draw_data)
 
         shader_struct_v2f clip_v2fs[3 * 10] = {};
         int num_vertices = clip_triangle(0, v2fs, clip_v2fs);
-
+        if (num_vertices<3)
+        {
+            occludedTrisSet.insert(triangleIdx);
+        }
         /* triangle assembly */
         for (int j = 0; j < num_vertices - 2; ++j)
         {
@@ -464,24 +481,38 @@ void graphics_draw_triangle(DrawData* draw_data)
 
             rasterize_triangle(draw_data, ret_v2fs);
         }
-#if _DEBUG
-        ++gNum;
-#endif
+
+        ++triangleIdx;
+
     }
 
-#if _DEBUG
+
     const auto& faceIDMap = draw_data->model->idMap_;
-    std::set<int> faceIDs;
-    for (const auto& it : faceIDMap)
+    std::set<int> occludedFaceIDs;
+    for (const auto& faceIDTrisVecPair : faceIDMap)
     {
-        for (const auto& it2 : it.second)
+        for (const auto trisIDx : faceIDTrisVecPair.second)
         {
-            if (gSet.find(it2) != gSet.end())
+            if (occludedTrisSet.find(trisIDx) != occludedTrisSet.end())
             {
-                faceIDs.insert(it.first);
+                occludedFaceIDs.insert(faceIDTrisVecPair.first);
             }
         }
     }
-#endif
+    std::set<int> visFaceIDs;
+    for (const auto& faceIDTrisVecPair : faceIDMap)
+    {
+        if (occludedFaceIDs.find(faceIDTrisVecPair.first) == occludedFaceIDs.end())
+        {
+            visFaceIDs.insert(faceIDTrisVecPair.first);
+        }
+    }
+
+    for (auto faceID : visFaceIDs)
+    {
+        std::cout << faceID << ",";
+    }
+    std::cout << "\n\n";
+
     return;
 }

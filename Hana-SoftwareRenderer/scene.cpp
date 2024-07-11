@@ -1,4 +1,4 @@
-#include "scene.h"
+﻿#include "scene.h"
 #include "MAPPModelInfo/Mesh.h"
 #include "MAPPModelInfo/ModelInfo.h"
 
@@ -146,7 +146,7 @@ void SingleModelScene::tick(float delta_time) {
     char line[50] = "";
     snprintf(line, 50, "shader: %s\n", shaderInfos[cur_shader_index].des);
     strcat(text, line);
-    snprintf(line, 50, "press key [Q] to switch shader\n\n");
+    snprintf(line, 50, "press key [Q] to reload modelInfo\n\n");
     strcat(text, line);
 
     draw_model->draw(camera, frameBuffer, enable_shadow);

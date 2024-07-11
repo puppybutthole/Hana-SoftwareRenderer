@@ -88,7 +88,7 @@ int main()
     ModelInfoJsonSerializer::ModelInfoBinDeserializer(userNamestr + "\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.bin", modelInfo);
 
     const auto& mesh = modelInfo.m_mesh;
-    MAPPUtilsFun::CreateOBJFile(mesh, "C:\\Users\\ThinkPad\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.obj");
+    MAPPUtilsFun::CreateOBJFile(mesh, userNamestr + "\\AppData\\Roaming\\UDS\\QY CAM\\MAPPTmp\\MAPPModelInfo.obj");
 
     platform_initialize();
     window_t* window;
@@ -185,6 +185,7 @@ int main()
         // 清除颜色缓存和深度缓存
         frame_buffer->renderbuffer_clear_color(Color::Black);
         frame_buffer->renderbuffer_clear_depth(1e30f);
+        frame_buffer->renderbuffer_clear_idx(-1);
 
         input_poll_events();
     }

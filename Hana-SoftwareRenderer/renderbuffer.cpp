@@ -1,10 +1,13 @@
-#include "renderbuffer.h"
+﻿#include "renderbuffer.h"
 
 RenderBuffer::RenderBuffer(int width, int height) {
 	int color_buffer_size = width * height * 4;
 	int depth_buffer_size = sizeof(float) * width * height;
+	int triIdx_buffer_size = sizeof(int) * width * height;
+
 	Color default_color = { 0, 0, 0, 1 };
 	float default_depth = 1;
+	int default_trisIdx = -1;
 
 	assert(width > 0 && height > 0);
 
@@ -12,17 +15,31 @@ RenderBuffer::RenderBuffer(int width, int height) {
 	this->height = height;
 	this->color_buffer = (unsigned char*)malloc(color_buffer_size);
 	this->depth_buffer = (float*)malloc(depth_buffer_size);
+	this->triIdx_buffer = (int*)malloc(triIdx_buffer_size);
 
 	this->renderbuffer_clear_color(default_color);
 	this->renderbuffer_clear_depth(default_depth);
+	this->renderbuffer_clear_idx(default_trisIdx);
 }
 
 RenderBuffer::~RenderBuffer()
 {
 	free(color_buffer);
 	free(depth_buffer);
+	free(triIdx_buffer);
 }
 
+void RenderBuffer::set_triIdx(int x, int y, int idx)
+{
+	int index = y * width + x;
+	triIdx_buffer[index] = idx;
+}
+
+float RenderBuffer::get_triIdx(int x, int y)
+{
+	int index = y * width + x;
+	return triIdx_buffer[index];
+}
 
 void RenderBuffer::set_depth(int x, int y, float depth) {
 	int index = y * width + x;
@@ -53,6 +70,7 @@ Color RenderBuffer::get_color(int x, int y)
 void RenderBuffer::renderbuffer_release() {
 	free(color_buffer);
 	free(depth_buffer);
+	free(triIdx_buffer);
 	free(this);
 }
 
@@ -72,5 +90,15 @@ void RenderBuffer::renderbuffer_clear_depth(float depth) {
 	int i;
 	for (i = 0; i < num_pixels; i++) {
 		this->depth_buffer[i] = depth;
+	}
+}
+
+void RenderBuffer::renderbuffer_clear_idx(int triIdx)
+{
+	int num_pixels = this->width * this->height;
+	int i;
+	for (i = 0; i < num_pixels; i++) 
+	{
+		this->triIdx_buffer[i] = triIdx;
 	}
 }

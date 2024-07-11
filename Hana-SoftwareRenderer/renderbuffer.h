@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "color.h"
 
@@ -11,6 +11,11 @@ public:
 	unsigned char* color_buffer;
 	float* depth_buffer;
 
+	int* triIdx_buffer;
+
+	void set_triIdx(int x, int y, int idx);
+	float get_triIdx(int x, int y);
+
 	void set_depth(int x, int y, float depth);
 	float get_depth(int x, int y);
 	void set_color(int x, int y, Color color);
@@ -19,4 +24,5 @@ public:
 	void renderbuffer_release();
 	void renderbuffer_clear_color(Color color);
 	void renderbuffer_clear_depth(float depth);
+	void renderbuffer_clear_idx(int triIdx);
 };
