@@ -36,7 +36,7 @@ void RenderBuffer::set_triIdx(int x, int y, int idx)
     triIdx_buffer[index] = idx;
 }
 
-float RenderBuffer::get_triIdx(int x, int y)
+int RenderBuffer::get_triIdx(int x, int y)
 {
     int index = y * width + x;
     return triIdx_buffer[index];

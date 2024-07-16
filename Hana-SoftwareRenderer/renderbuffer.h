@@ -14,7 +14,7 @@ public:
     int* triIdx_buffer;
 
     void set_triIdx(int x, int y, int idx);
-    float get_triIdx(int x, int y);
+    int get_triIdx(int x, int y);
 
     void set_depth(int x, int y, float depth);
     float get_depth(int x, int y);
