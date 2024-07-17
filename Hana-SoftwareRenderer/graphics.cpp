@@ -10,6 +10,12 @@
 
 std::unordered_set<int> occludedTrisSet;
 
+std::unordered_set<int> highLightTriID = { 39,7,32,8,1,29,21,2,18,48,31,33,10,6,16,15,24,47,43,14,26,13,25,12,3,35,42,46 };
+bool isIn = false;
+
+std::unordered_set<int> tmp;
+
+
 int triangleIdx = 0;
 
 static void liner_interpolate_varyings(shader_struct_v2f* from, shader_struct_v2f* to, shader_struct_v2f* ret, int sizeof_varyings, float t)
@@ -246,7 +252,8 @@ static void interpolate_varyings(shader_struct_v2f* v2f, shader_struct_v2f* ret,
     }
 }
 
-static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P) {
+static Vector3f barycentric(Vector2f A, Vector2f B, Vector2f C, Vector2f P)
+{
     Vector3f s[2];
     for (int i = 2; i--; )
     {
@@ -388,13 +395,17 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
 
 //#pragma omp parallel for
     Vector2i P;
+
+    int triPixel = 0;
+    int corverPixel = 0;
+    std::unordered_set<int>sb;
     for (P.x = bboxmin.x; P.x <= bboxmax.x; P.x++)
     {
         for (P.y = bboxmin.y; P.y <= bboxmax.y; P.y++)
         {
             Vector3f barycentric_weights = barycentric(screen_coords[0], screen_coords[1], screen_coords[2], P);
             if (barycentric_weights.x < 0 || barycentric_weights.y < 0 || barycentric_weights.z < 0) continue;
-
+            ++triPixel;
             // 深度插值
             float frag_depth = interpolate_depth(screen_depth, barycentric_weights);
             // 深度测试
@@ -411,7 +422,15 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
             int lastTriIdx = render_buffer->get_triIdx(P.x, P.y);
             if (lastTriIdx!=-1)
             {
+                sb.insert(lastTriIdx);
                 occludedTrisSet.insert(lastTriIdx);
+                ++corverPixel;
+                /*const auto& sbsb = draw_data->model->idMap_.at(268435465);
+                std::unordered_set<int> tmpsb(sbsb.begin(), sbsb.end());
+                if (tmpsb.find(lastTriIdx) != tmpsb.end())
+                {
+                    highLightTriID.insert(lastTriIdx);
+                }*/
             }
 
             // 变量插值
@@ -432,6 +451,22 @@ static void rasterize_triangle(DrawData* draw_data, shader_struct_v2f* v2f)
                 render_buffer->set_depth(P.x, P.y, frag_depth);
                 render_buffer->set_color(P.x, P.y, color);
                 render_buffer->set_triIdx(P.x, P.y, triangleIdx);
+                //if (isIn)
+                //{
+                //    render_buffer->set_color(P.x, P.y, Color::Red);
+                //}
+                
+            }
+        }
+    }
+    if (triPixel!=0)
+    {
+        float proportion = static_cast<float>(corverPixel) / static_cast<float>(triPixel);
+        if (corverPixel < 8)//小于五个像素则将其忽略
+        {
+            for (auto it : sb)
+            {
+                occludedTrisSet.erase(it);
             }
         }
     }
@@ -452,6 +487,15 @@ void graphics_draw_triangle(DrawData* draw_data)
     {
         for (const auto& triID : faceID2Tri.second)
         {
+            //if (highLightTriID.find(triID)!=highLightTriID.end())
+            //{
+            //    isIn = true;
+            //}
+            //else
+            //{
+            //    isIn = false;
+            //}
+
             const Vector3f& fnormal = draw_data->model->faceNormal_[triID];
             float angle = fnormal * dir;
             if (angle < 1e-4)//垂直
