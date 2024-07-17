@@ -69,20 +69,14 @@ public:
 #ifdef ORTHO
         float cameraDistance = sqrt(camera->get_position().x * camera->get_position().x + camera->get_position().y * camera->get_position().y + camera->get_position().z * camera->get_position().z);
         
-        float alpha = cameraDistance / (gameobject->model->zMax - gameobject->model->zMin);
-        float orthoBoxLeft = alpha * gameobject->model->xMin + 0.5f * (1.0f - alpha) * ( gameobject->model->xMin + alpha * gameobject->model->xMax);
-        float orthoBoxRight  = alpha * gameobject->model->xMax + 0.5f * (1.0f - alpha) * ( gameobject->model->xMin + alpha * gameobject->model->xMax);
-        float orthoBoxDown = alpha * gameobject->model->yMin + 0.5f * (1.0f - alpha) * (gameobject->model->yMin + alpha * gameobject->model->yMax);
-        float orthoBoxTop = alpha * gameobject->model->yMax + 0.5f * (1.0f - alpha) * (gameobject->model->yMin + alpha * gameobject->model->yMax);
-        float orthoBoxNear = alpha * gameobject->model->zMin + 0.5f * (1.0f - alpha) * ( gameobject->model->zMin + alpha * gameobject->model->zMax);
-        float orthoBoxFar = alpha * gameobject->model->zMax + 0.5f * (1.0f - alpha) * ( gameobject->model->zMin + alpha * gameobject->model->zMax);
+        float x_center = (gameobject->model->xMin + gameobject->model->xMax) * 0.5;
+        float y_center = (gameobject->model->yMin + gameobject->model->yMax) * 0.5;
 
-        float boxLeftDown = std::min(orthoBoxLeft,orthoBoxDown);
-        float boxRightTop = std::max(orthoBoxRight, orthoBoxTop);
+        float boxWidth = std::max(gameobject->model->xMax - gameobject->model->xMin, gameobject->model->yMax - gameobject->model->yMin)*0.5 + cameraDistance;
 
         Matrix4x4 projection_matrix = camera->get_ortho_proj_matrix(
 
-            boxLeftDown, boxRightTop, boxLeftDown, boxRightTop,-FAR * alpha,FAR*alpha
+            x_center-boxWidth, x_center+boxWidth, y_center-boxWidth, y_center+boxWidth,-FAR ,FAR
 
             //gameobject->model->xMin - 1.f, gameobject->model->xMax + 1.f,
             //gameobject->model->yMin - 1.f, gameobject->model->yMax + 1.f,
